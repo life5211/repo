@@ -7,7 +7,7 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import java.util.Objects;
 
 @NodeEntity
-public class Student extends BasicNode {
+public class Student {
 
     @GraphId
     private Long id;
