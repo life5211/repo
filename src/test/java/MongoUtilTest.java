@@ -1,25 +1,24 @@
 
-import com.hnf.util.MongoDBUtil;
 import com.hnf.util.MongoUtil;
-import com.mongodb.BasicDBObject;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
+import com.mongodb.util.JSON;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
+
+import static com.mongodb.client.model.Filters.*;
 
 /**
  * desc:
@@ -54,7 +53,6 @@ public class MongoUtilTest {
      */
     @Test
     public void insertOne() {
-        // MongoCollection<Document> collection = MongoDBUtil.getDBConnect().getCollection("user");
         Document document = new Document("name", "张三")
                 .append("sex", "男")
                 .append("age", 18);
@@ -67,7 +65,7 @@ public class MongoUtilTest {
     @Test
     public void deleteMany() {
 
-        collection.deleteMany(Filters.all("age", 18));
+        collection.deleteMany(all("age", 18));
     }
 
     /**
@@ -90,8 +88,8 @@ public class MongoUtilTest {
      */
     @Test
     public void updateOne() {
-        Document document = new Document("$set", new Document("age", 100));
-        collection.updateOne(Filters.eq("name", "张三"), document);
+        Document document = new Document("$unset", new Document("age", 0));
+        collection.updateOne(Filters.eq("name", "张三1"), document);
     }
 
     /**
@@ -100,7 +98,7 @@ public class MongoUtilTest {
     @Test
     public void updateMany() {
         Document document = new Document("$inc", new Document("age", -51));
-        collection.updateMany(Filters.eq("name", "张三"), document);
+        collection.updateMany(Filters.eq("name", "张三1"), document);
     }
 
     /**
@@ -108,25 +106,49 @@ public class MongoUtilTest {
      */
     @Test
     public void find() {
-        FindIterable findIterable = collection.find();
-        MongoCursor cursor = findIterable.iterator();
-        while (cursor.hasNext()) {
-//            Document document = (Document) cursor.next();
-//            System.out.println(document.get("name"));
-             System.out.println(cursor.next());
+        FindIterable findIterable = /*collection.find(Filters.eq("name", "张三1"));*/
+
+
+                collection.find(and(gte("age", 21), Filters.lt("age", 100)))
+                        .projection(new Document("name", 1)
+                                .append("sex", 1)
+                                .append("categories", 1)
+                                .append("_id", 0));
+        print(findIterable);
+    }
+
+    /**
+     * 查找
+     */
+    @Test
+    public void find1() {
+//        FindIterable findIterable =
+        AggregateIterable<Document> aggregate = collection.aggregate(
+                Arrays.asList(
+                        /*Aggregates.match(eq("categories", "Bakery")),*/
+                        Aggregates.group("$sex", Accumulators.sum("count", 1))
+                )
+        );
+        print(aggregate);
+    }
+
+
+    void print(Iterable findIterable) {
+        for (Object o : findIterable) {
+            System.err.println(JSON.serialize(o));
         }
     }
 
     @After
     public void showAll() {
         for (Document document : col.find()) {
-            System.err.println(document);
+            System.out.println((document));
         }
     }
 
     @Test
     public void m1() {
-        col.updateMany(Filters.exists("uuid"), new Document("$set", new Document("likes", 200)));
-
+        System.out.println(MongoUtil.do1().do2().do3().DB_NAME);
+        col.updateMany(Filters.exists("title"), new Document("$unset", new Document("likes", 200)));
     }
 }

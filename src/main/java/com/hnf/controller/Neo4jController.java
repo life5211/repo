@@ -59,18 +59,18 @@ public class Neo4jController {
         teacherDao.save(teachers);
         studentDao.save(students);
 
-        BasicRelation relation = new BasicRelation(students.get(0), teachers.get(0));
-        relation.setRelationName("师生关系");
-        basicRelationshipDao.save(relation);
-        BasicRelation relation2 = new BasicRelation(students.get(1), teachers.get(1));
-        relation2.setRelationName("师生关系");
-        basicRelationshipDao.save(relation2);
-        BasicRelation relation3 = new BasicRelation(students.get(1), teachers.get(0));
-        relation3.setRelationName("师生关系");
-        basicRelationshipDao.save(relation3);
-        BasicRelation relation4 = new BasicRelation(teachers.get(0), students.get(0));
-        relation4.setRelationName("师生关系");
-        basicRelationshipDao.save(relation4);
+//        BasicRelation relation = new BasicRelation(students.get(0), teachers.get(0));
+//        relation.setRelationName("师生关系");
+//        basicRelationshipDao.save(relation);
+//        BasicRelation relation2 = new BasicRelation(students.get(1), teachers.get(1));
+//        relation2.setRelationName("师生关系");
+//        basicRelationshipDao.save(relation2);
+//        BasicRelation relation3 = new BasicRelation(students.get(1), teachers.get(0));
+//        relation3.setRelationName("师生关系");
+//        basicRelationshipDao.save(relation3);
+//        BasicRelation relation4 = new BasicRelation(teachers.get(0), students.get(0));
+//        relation4.setRelationName("师生关系");
+//        basicRelationshipDao.save(relation4);
 
         return studentDao.findAll();
     }

@@ -21,7 +21,7 @@ import java.util.List;
 public class MongoUtil {
     private static MongoClient mongoClient;
     private static MongoDatabase mongoDB;
-    public static final String DB_NAME = "";
+    public static final String DB_NAME = "--";
     public static final String COL_NAME = "";
 
     /**
@@ -87,5 +87,32 @@ public class MongoUtil {
      */
     public static MongoCollection<Document> getCollection(String dataBaseName, String collection) {
         return getDBConnect(dataBaseName).getCollection(collection);
+    }
+
+    /**
+     * 资源关闭
+     */
+    public static void close() {
+        if (MongoUtil.mongoDB != null) {
+            MongoUtil.mongoDB = null;
+        }
+        if (MongoUtil.mongoClient != null) {
+            MongoUtil.mongoClient.close();
+        }
+    }
+
+    public static MongoUtil do1() {
+        System.out.println("do1");
+        return null;
+    }
+
+    public static MongoUtil do2() {
+        System.out.println("do2");
+        return null;
+    }
+
+    public static MongoUtil do3() {
+        System.out.println("do3");
+        return null;//静态方法链式调用实现方式，能且仅能调用静态方法或者属性。
     }
 }

@@ -45,32 +45,36 @@ public class Student {
         return id;
     }
 
-    public void setId(Long id) {
+    public Student setId(Long id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Student setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getTel() {
         return tel;
     }
 
-    public void setTel(String tel) {
+    public Student setTel(String tel) {
         this.tel = tel;
+        return this;
     }
 
     public String getSex() {
         return sex;
     }
 
-    public void setSex(String sex) {
+    public Student setSex(String sex) {
         this.sex = sex;
+        return this;
     }
 
     @Override
