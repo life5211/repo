@@ -1,3 +1,5 @@
+package com.hnf;
+
 import com.hnf.util.MongoUtil;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;

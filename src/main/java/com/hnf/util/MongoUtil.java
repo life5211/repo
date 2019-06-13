@@ -23,6 +23,11 @@ public class MongoUtil {
     private static MongoDatabase mongoDB;
     public static final String DB_NAME = "--";
     public static final String COL_NAME = "";
+    public static final MongoUtil MONGO_UTIL = null;
+
+    private MongoUtil() {
+    }
+
 
     /**
      * @return MongoClient

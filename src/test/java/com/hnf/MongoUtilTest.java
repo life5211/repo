@@ -1,3 +1,4 @@
+package com.hnf;
 
 import com.hnf.util.MongoUtil;
 import com.mongodb.client.AggregateIterable;
@@ -117,6 +118,16 @@ public class MongoUtilTest {
         print(findIterable);
     }
 
+    @Test
+    public void find11() {
+        FindIterable findIterable = /*collection.find(Filters.eq("name", "张三1"));*/
+
+
+                collection.find(in("age",Arrays.asList(null,24,32,21,53)))
+                        ;
+        print(findIterable);
+    }
+
     /**
      * 查找
      */
@@ -148,7 +159,7 @@ public class MongoUtilTest {
 
     @Test
     public void m1() {
-        System.out.println(MongoUtil.do1().do2().do3().DB_NAME);
+        System.out.println(MongoUtil.do1().do2().do3().MONGO_UTIL.DB_NAME);
         col.updateMany(Filters.exists("title"), new Document("$unset", new Document("likes", 200)));
     }
 }
