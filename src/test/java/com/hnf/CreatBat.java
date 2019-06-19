@@ -6,7 +6,7 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class JavaTest {
+public class CreatBat {
     @Test
     public void method() {
         List<String> strings = Arrays.asList("---", null);
@@ -16,11 +16,11 @@ public class JavaTest {
 
     @Test
     public void creatBat() {
-        creat("D:\\jar", "CommunicateDevice");
+        creat("D:\\jar", "CommunicateUserProvinceClient");
     }
 
     public void creat(String path, String name) {
-        name += new SimpleDateFormat("yyyyMMddHHmm").format(new Date()).substring(2);
+//        name += new SimpleDateFormat("yyyyMMddHHmm").format(new Date()).substring(2);
         File file = new File(path + "/" + name  + ".bat");
         try {
             if (!file.exists()) {

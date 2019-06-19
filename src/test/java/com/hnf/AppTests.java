@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class Neo4jDemoApplicationTests {
+public class AppTests {
 
 	@Test
 	public void contextLoads() {
