@@ -16,24 +16,30 @@ public class CreatBat {
 
     @Test
     public void creatBat() {
-        creat("D:\\jar", "CommunicateUserProvinceClient");
+        creat("D:\\jar", "HoneyCombVirtualIdentity3");
     }
 
     public void creat(String path, String name) {
 //        name += new SimpleDateFormat("yyyyMMddHHmm").format(new Date()).substring(2);
-        File file = new File(path + "/" + name  + ".bat");
+        File file = new File(path + "/" + name + ".bat");
+        PrintStream ps = null;
         try {
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            PrintStream ps = new PrintStream(file);
-            ps.println("title "+ name );
+//            if (!file.exists()) {
+//                file.createNewFile();
+//            }
+            ps = new PrintStream(file);
+            ps.println("chcp 65001");
+            ps.println("title " + name);
             ps.println("color 0a");
-            ps.println("java -jar " + name  + ".jar");
+            ps.println("java -jar " + name + ".jar");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (ps != null) {
+                ps.close();
+            }
         }
 
     }
@@ -46,7 +52,7 @@ public class CreatBat {
 //        BiConsumer<A, ? super T> downstreamAccumulator = downstream.accumulator();
 //        BiConsumer<Map<K, A>, T> accumulator = (m, t) -> {
 //            K key = Objects.requireNonNull(classifier.apply(t), "element cannot be mapped to a null key");
-//            A container = m.computeIfAbsent(key, k -> downstreamSupplier.get());
+//            A container = m.computeIfAbsent(key, k -> downstreamSupplier.cycle());
 //            downstreamAccumulator.accept(container, t);
 //        };
 //        BinaryOperator<Map<K, A>> merger = Collectors.<K, A, Map<K, A>>mapMerger(downstream.combiner());
