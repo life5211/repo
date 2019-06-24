@@ -52,7 +52,7 @@ public class CreatBat {
 //        BiConsumer<A, ? super T> downstreamAccumulator = downstream.accumulator();
 //        BiConsumer<Map<K, A>, T> accumulator = (m, t) -> {
 //            K key = Objects.requireNonNull(classifier.apply(t), "element cannot be mapped to a null key");
-//            A container = m.computeIfAbsent(key, k -> downstreamSupplier.cycle());
+//            A container = m.computeIfAbsent(key, k -> downstreamSupplier.getResult());
 //            downstreamAccumulator.accept(container, t);
 //        };
 //        BinaryOperator<Map<K, A>> merger = Collectors.<K, A, Map<K, A>>mapMerger(downstream.combiner());
