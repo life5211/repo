@@ -75,4 +75,23 @@ public class CreatBat {
 //        }
 //    }
 
+    /**
+     * 应用服务器产生认证原文(第二步 服务端产生认证原文)
+     *
+     * @return 认证原文
+     */
+    @Test
+    public void generateRandomNumByApplication() {
+        String num = "1234567890abcdefghijklmnopqrstopqrstuvwxyz";
+        int size = 1000;
+        char[] charArray = num.toCharArray();
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < size; i++) {
+//            System.out.println(System.currentTimeMillis() + "\t" + System.nanoTime());
+            sb.append(charArray[random.nextInt(2)]);
+        }
+        System.out.println(sb);
+    }
+
 }

@@ -25,17 +25,21 @@ public class Calc {
 
 
     public Double getResult(String str) {
-        if (str.matches("(\\+|-)?\\d+(\\.\\d+)?")) {
+        if (str.matches("^(\\+|-)?\\d+(\\.\\d+)?$")) {
             return Double.valueOf(str);
-        } else if (str.contains("(")) {  //去掉括号
+        }
+        if (str.contains("(")) {  //去掉括号
             int left = str.lastIndexOf('(');
             int right = str.indexOf(')', left);
             return getResult(str.substring(0, left) + getResult(str.substring(left + 1, right)) + str.substring(right + 1));
-        } else if (str.contains("^")) { //计算pow
+        }
+        if (str.contains("^")) { //计算pow
             return getResult(calculate(str, 3));
-        } else if (str.contains("*") || str.contains("/")) { //计算乘除法
+        }
+        if (str.contains("*") || str.contains("/")) { //计算乘除法
             return getResult(calculate(str, 2));
-        } else if (str.contains("+") || str.contains("-")) { //计算加减法
+        }
+        if (str.contains("+") || str.contains("-")) { //计算加减法
             return getResult(calculate(str, 1));
         }
         return null;
@@ -77,25 +81,32 @@ public class Calc {
         str = str.replaceAll("\\+-", "-").replaceAll("--", "+");
         if (str.isEmpty()) {
             return 0d;
-        } else if (str.matches("-?\\d+(\\.\\d+)?")) {
+        }
+        if (str.matches("-?\\d+(\\.\\d+)?")) {
             return Double.valueOf(str);
-        } else if (str.contains(")")) {
+        }
+        if (str.contains(")")) {
             int left = str.lastIndexOf("(");
             int right = str.indexOf(")", left);
             return calc(str.substring(0, left) + calc(str.substring(left + 1, right)) + str.substring(right + 1));
-        } else if (str.contains("-") && !str.contains("^-") && !str.contains("*-") && !str.contains("/-")) {
+        }
+        if (str.contains("-") && !str.contains("^-") && !str.contains("*-") && !str.contains("/-")) {
             int index = str.lastIndexOf("-");
             return calc(str.substring(0, index)) - calc(str.substring(index + 1));
-        } else if (str.contains("+")) {
+        }
+        if (str.contains("+")) {
             int index = str.lastIndexOf("+");
             return calc(str.substring(0, index)) + calc(str.substring(index + 1));
-        } else if (str.contains("*")) {
+        }
+        if (str.contains("*")) {
             int index = str.lastIndexOf("*");
             return calc(str.substring(0, index)) * calc(str.substring(index + 1));
-        } else if (str.contains("/")) {
+        }
+        if (str.contains("/")) {
             int index = str.lastIndexOf("/");
             return calc(str.substring(0, index)) / calc(str.substring(index + 1));
-        } else if (str.contains("^")) {
+        }
+        if (str.contains("^")) {
             int index = str.lastIndexOf("^");
             return Math.pow(calc(str.substring(0, index)), calc(str.substring(index + 1)));
         }
@@ -124,16 +135,16 @@ public class Calc {
 
     @Test
     public void p() {
-        System.out.printf("%f",5f);
+        System.out.printf("%f", 5f);
         System.out.printf("字母a的大写是：%c %n", 'A');
-        System.out.printf("3>7的结果是：%b %n", 3>7);
-        System.err.printf("100的一半是：%d %n", 100/2);
+        System.out.printf("3>7的结果是：%b %n", 3 > 7);
+        System.err.printf("100的一半是：%d %n", 100 / 2);
         System.out.printf("100的16进制数是：%x %n", 100);
         System.out.printf("100的8进制数是：%o %n", 100);
-        System.out.printf("50元的书打8.5折扣是：%f 元%n", 50*0.85);
-        System.out.printf("上面价格的16进制数是：%a %n", 50*0.85);
-        System.out.printf("上面价格的指数表示：%e %n", 50*0.85);
-        System.out.printf("上面价格的指数和浮点数结果的长度较短的是：%g %n", 50*0.85);
+        System.out.printf("50元的书打8.5折扣是：%f 元%n", 50 * 0.85);
+        System.out.printf("上面价格的16进制数是：%a %n", 50 * 0.85);
+        System.out.printf("上面价格的指数表示：%e %n", 50 * 0.85);
+        System.out.printf("上面价格的指数和浮点数结果的长度较短的是：%g %n", 50 * 0.85);
         System.out.printf("上面的折扣是%d%% %n", 85);
         System.out.printf("字母A的散列码是：%h %n", 'A');
     }
