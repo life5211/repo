@@ -100,14 +100,16 @@ class MyFrame extends JFrame{
         //添加菜单栏监听器
         startItem.addActionListener(new ActionListener()
         {
-        	public void actionPerformed(ActionEvent e)
+        	@Override
+			public void actionPerformed(ActionEvent e)
         	{
         		setBomb();
         	}
         });
         primary.addActionListener(new ActionListener()
         {
-        	public void actionPerformed(ActionEvent e)
+        	@Override
+			public void actionPerformed(ActionEvent e)
         	{
         		row = PRIMARY_ROW;
         		col = PRIMARY_COL;
@@ -117,7 +119,8 @@ class MyFrame extends JFrame{
         });
         medium.addActionListener(new ActionListener()
         {
-        	public void actionPerformed(ActionEvent e)
+        	@Override
+			public void actionPerformed(ActionEvent e)
         	{
         		row = MEDIUM_ROW;
         		col = MEDIUM_COL;
@@ -127,7 +130,8 @@ class MyFrame extends JFrame{
         });
         senior.addActionListener(new ActionListener()
         {
-        	public void actionPerformed(ActionEvent e)
+        	@Override
+			public void actionPerformed(ActionEvent e)
         	{
         		row = SENIOR_ROW;
         		col = SENIOR_COL;
@@ -137,7 +141,8 @@ class MyFrame extends JFrame{
         });
         ssuper.addActionListener(new ActionListener()
         {
-        	public void actionPerformed(ActionEvent e)
+        	@Override
+			public void actionPerformed(ActionEvent e)
         	{
         		row = SUPER_ROW;
         		col = SUPER_COL;
@@ -147,7 +152,8 @@ class MyFrame extends JFrame{
         });
         exitItem.addActionListener(new ActionListener()
         {
-        	public void actionPerformed(ActionEvent e)
+        	@Override
+			public void actionPerformed(ActionEvent e)
         	{
         		System.exit(0);
         	}
@@ -174,7 +180,7 @@ class MyFrame extends JFrame{
 		BombPanel.removeAll();//移除雷区所有组件
 		bomb = new Bomb[row][col];
 		BombPanel.setLayout(new GridLayout(row,col));
-		for(int i=0;i<row;i++)
+		for(int i=0;i<row;i++) {
 			for(int j=0;j<col;j++)
 			{
 				bomb[i][j] = new Bomb(i,j);
@@ -194,10 +200,13 @@ class MyFrame extends JFrame{
 								}
 								else
 								{
-									for(int i=0;i<row;i++)
-										for(int j=0;j<col;j++)
-											if(bomb[i][j].isBomb)
+									for(int i=0;i<row;i++) {
+										for (int j = 0; j < col; j++) {
+											if (bomb[i][j].isBomb) {
 												bomb[i][j].setIcon(iconbomb);
+											}
+										}
+									}
 									ebomb.setIcon(icons);
 									ebomb.setIcon(iconbomb0);
 									isLose();
@@ -207,19 +216,20 @@ class MyFrame extends JFrame{
 						}
 						else if(e.getButton() == MouseEvent.BUTTON3)
 						{
-							if (!ebomb.isClicked) 
+							if (!ebomb.isClicked)
 						    {
 						    	ebomb.Bombflag = (ebomb.Bombflag + 1) % 3;
-						    	if (ebomb.Bombflag == 1) 
+						    	if (ebomb.Bombflag == 1)
 						    	{
-						    		if (leftbombnum > 0) 
+						    		if (leftbombnum > 0)
 						    		{
 						    			ebomb.setIcon(iconflag);
 						    			ebomb.isRight = true;
 						    			leftbombnum--;
 						    		}
-						    		else 
-						    			ebomb.Bombflag = 0;
+						    		else {
+										ebomb.Bombflag = 0;
+									}
 						    	}
 						    	else if (ebomb.Bombflag == 2)
 						    	{
@@ -227,8 +237,9 @@ class MyFrame extends JFrame{
 						    		ebomb.setIcon(iconflag2);
 						    		ebomb.isRight = false;
 						    	}
-						    	else 
-						    		ebomb.setIcon(icons);
+						    	else {
+									ebomb.setIcon(icons);
+								}
 						    	noflagbombnum.setText("未标记雷数 ："+leftbombnum);
 						    	isWin();
 						    }
@@ -237,6 +248,7 @@ class MyFrame extends JFrame{
 				});
 				BombPanel.add(bomb[i][j]);
 			}
+		}
 		blocknum = row * col;//方格数
 		leftbombnum = bombnum;//未标记地雷数
 		leftblocknum = blocknum - bombnum;//未打开方格数
@@ -246,7 +258,7 @@ class MyFrame extends JFrame{
 		setSize(width,weight);//设定窗口大小
 		setResizable(false);//设定不可改变窗口大小
 		//初始化方格
-		for(int i=0;i<row;i++)
+		for(int i=0;i<row;i++) {
 			for(int j=0;j<col;j++)
 			{
 				bomb[i][j].BombRoundCount = 9;
@@ -256,6 +268,7 @@ class MyFrame extends JFrame{
 				bomb[i][j].isRight = false;
 				bomb[i][j].setIcon(icons);
 			}
+		}
  
 		//开始随机布雷
 		Random rand = new Random();
@@ -274,17 +287,22 @@ class MyFrame extends JFrame{
 	
 	public void calculateRoundBomb()//计算周围雷数方法
 	{
-		for(int i=0;i<row;i++)
+		for(int i=0;i<row;i++) {
 			for(int j=0;j<col;j++)
 			{
 				int count = 0;
-				if(!bomb[i][j].isBomb)
-					for(int x=i-1;x<=i+1;x++)
-						for(int y=j-1;y<=j+1;y++)
-							if(x>=0&&y>=0&&x<row&&y<col&&bomb[x][y].isBomb)
+				if(!bomb[i][j].isBomb) {
+					for (int x = i - 1; x <= i + 1; x++) {
+						for (int y = j - 1; y <= j + 1; y++) {
+							if (x >= 0 && y >= 0 && x < row && y < col && bomb[x][y].isBomb) {
 								count++;
+							}
+						}
+					}
+				}
 				bomb[i][j].BombRoundCount = count;
 			}
+		}
 	}
 	
 	public void isWin()//判断是否挖完了所有雷
@@ -306,11 +324,15 @@ class MyFrame extends JFrame{
 	{
 		int x = clickbomb.bx;
 		int y = clickbomb.by;
-		for(int i=x-1;i<=x+1;i++)
-			for(int j=y-1;j<=y+1;j++)
-				if(i>=0&&j>=0&&i<row&&j<col)
-					if(!bomb[i][j].isBomb&&!bomb[i][j].isClicked&&!bomb[i][j].isRight)
+		for(int i=x-1;i<=x+1;i++) {
+			for(int j=y-1;j<=y+1;j++) {
+				if (i >= 0 && j >= 0 && i < row && j < col) {
+					if (!bomb[i][j].isBomb && !bomb[i][j].isClicked && !bomb[i][j].isRight) {
 						open(bomb[i][j]);
+					}
+				}
+			}
+		}
 	}
 	
 	public void open(Bomb clickbomb)//点击打开方格
@@ -319,22 +341,23 @@ class MyFrame extends JFrame{
 		leftblocknum--;
 		if(clickbomb.BombRoundCount > 0)
 		{
-			if(clickbomb.BombRoundCount == 1)
+			if(clickbomb.BombRoundCount == 1) {
 				clickbomb.setIcon(icon1);
-			else if(clickbomb.BombRoundCount == 2)
+			} else if(clickbomb.BombRoundCount == 2) {
 				clickbomb.setIcon(icon2);
-			else if(clickbomb.BombRoundCount == 3)
+			} else if(clickbomb.BombRoundCount == 3) {
 				clickbomb.setIcon(icon3);
-			else if(clickbomb.BombRoundCount == 4)
+			} else if(clickbomb.BombRoundCount == 4) {
 				clickbomb.setIcon(icon4);
-			else if(clickbomb.BombRoundCount == 5)
+			} else if(clickbomb.BombRoundCount == 5) {
 				clickbomb.setIcon(icon5);
-			else if(clickbomb.BombRoundCount == 6)
+			} else if(clickbomb.BombRoundCount == 6) {
 				clickbomb.setIcon(icon6);
-			else if(clickbomb.BombRoundCount == 7)
+			} else if(clickbomb.BombRoundCount == 7) {
 				clickbomb.setIcon(icon7);
-			else if(clickbomb.BombRoundCount == 8)
+			} else if(clickbomb.BombRoundCount == 8) {
 				clickbomb.setIcon(icon8);
+			}
 		}
 		else
 		{

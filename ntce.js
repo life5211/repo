@@ -150,11 +150,11 @@ javascript:(function () {
     } else {
         console.log("Page Error");
     }
-})()
+})();
 
 //========================分割线======
 //添加浏览器书签名称自定义，链接复制以下代码
-//在教师资格认定网 http://subsimple.com/bookmarklets/jsbuilder.htm 填好账户密码后点击书签自动登录
+//在教师资格认定网   填好账户密码后点击书签自动登录
 
 javascript:(function(){var i=1;function login(){var account=$("#idNum").val().replace(/(^\s*)|(\s*$)/g,"").toUpperCase();var password=$("#password").val();var stamp=new Date().getTime();var pwd=hex_md5(account+hex_md5(password));var rsa=new JSEncrypt();rsa.setPublicKey(_rsa_key);var en=rsa.oencrypt(account);var sign=signatureLogin(rsa,account,pwd,1,stamp,stamp);var data=JSON.stringify({account:en,mode:1,hash:hash,offsetX:offsetX});$post("rest/security/identify/login2",data,{success:function (result){avail=false;console.log(result);localStorage.account=account;localStorage.accessToken=result.data.accessToken;var key3=des3_decrypt(pwd.substring(0,24),result.data.key3);localStorage.key3=key3;localStorage.random=des3_decrypt(key3,result.data.random);localStorage.hash=result.data.hash;localStorage.teacher=JSON.stringify(result.data.teacher);localStorage.latestLoginTime=result.data.latestLoginTime;window.location.href="desktop/index.html?t="+Date.parse(new Date());},failure:function (code,message){var msg=api_error[code]||message;var sleep=parseInt(Math.random()*500+300);console.log(i+" "+msg);i++;setTimeout(login,sleep);}},sign,stamp);}var url=document.URL;if(url.search("http://sso.jszg.edu.cn/")>-1&&url.search("login.html")>0){login();}else{console.log("Page Error");}})()
 

@@ -93,5 +93,33 @@ public class CreatBat {
         }
         System.out.println(sb);
     }
+        @Test
+    public void generat() {
+//            System.out.println("12345".substring(0, 6));
+
+            String mapStr = "function(){\n"
+                    + "	var time = this.UPDATETIME;\n"
+                    + "	if(time === null){\n"
+                    + "		time = 0;\n"
+                    + "	}\n"
+                    + "	var date = new Date(time);	\n"
+                    + "	checkDate(date);\n"
+                    + "}\n"
+                    + "\n"
+                    + "function checkDate(date){\n"
+                    + "	var year = date.getFullYear();\n"
+                    + "	var month = date.getMonth();\n"
+                    + "	var day = date.getDate();\n"
+                    + "	var newDate = new Date(year,month,day);\n"
+                    + "	emit(newDate,1);\n"
+                    + "}";
+            String reduceStr = "function(key,values){	"
+                    + "     return Array.sum(values);   "
+                    + "};";
+            System.out.println(mapStr);
+
+            System.out.println(reduceStr);
+        }
+
 
 }

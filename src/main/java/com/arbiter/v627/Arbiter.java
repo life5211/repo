@@ -1,4 +1,4 @@
-package com.arbiter;
+package com.arbiter.v627;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -6,35 +6,52 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class Arbiter_v_1_23 extends JFrame {
+/**
+ * @author xhz
+ * @version 1.0.4
+ * @date 2019/6/27
+ */
+public class Arbiter extends JFrame {
 
-    private final int PRIMARY_ROW = 8;// 初级行数
-    private final int PRIMARY_COL = 8;// 初级列数
-    private final int PRIMARY_BOMB = 10;// 初级雷数
+    private static final int PRIMARY_ROW = 8;
+    private static final int PRIMARY_COL = 8;
+    private static final int PRIMARY_BOMB = 10;
+    private static final int MEDIUM_ROW = 16;
+    private static final int MEDIUM_COL = 16;
+    private static final int MEDIUM_BOMB = 40;
+    private static final int SENIOR_ROW = 16;
+    private static final int SENIOR_COL = 30;
+    private static final int SENIOR_BOMB = 99;
 
-    private final int MEDIUM_ROW = 16;// 中级行数
-    private final int MEDIUM_COL = 16;// 中级列数
-    private final int MEDIUM_BOMB = 40;// 中级雷数
+    private int row = PRIMARY_ROW;
+    private int col = PRIMARY_COL;
+    /**
+     * // 雷数
+     */
+    private int bombNo = PRIMARY_BOMB;
+    /**
+     * // 雷区方格数
+     */
+    private int blockNo = row * col;
+    /**
+     * // 未标记雷数
+     */
+    private int unmarkMines = bombNo;
+    /**
+     * // 剩余方格数
+     */
+    private int leftBlockNo = blockNo - bombNo;
+    private int mineSize = 800 / row;
+    private int height = row * mineSize + 70;
+    private int width = col * mineSize + 20;
 
-    private final int SENIOR_ROW = 16;// 高级行数
-    private final int SENIOR_COL = 30;// 高级列数
-    private final int SENIOR_BOMB = 99;// 高级雷数
-
-    private int row = PRIMARY_ROW;// 行数
-    private int col = PRIMARY_COL;// 列数
-    private int bombNo = PRIMARY_BOMB;// 雷数
-    private int blockNo = row * col;// 雷区方格数
-    private int unmarkMines = bombNo;// 未标记雷数
-    private int leftBlockNo = blockNo - bombNo;// 剩余方格数
-    private int size = 800 / row;// 单个雷块尺寸
-    private int height = row * size + 70;// 高度
-    private int width = col * size;// 宽度
-
-    private JPanel contentPane;// 总面板
-    private JPanel panelBtn;// 功能区面板
+    private JPanel contentPane;
+    private JPanel panelBtn;
     private JPanel panelMines;
-    private JButton btnNewGame;// 重新开始游戏按钮
+    private JButton btnNewGame;
     private JButton btnPrimary;
     private JButton btnMedium;
     private JButton btnSenior;
@@ -47,24 +64,24 @@ public class Arbiter_v_1_23 extends JFrame {
     private int[][] nAroundMines;
 
     private boolean gaming = false;
-    private boolean startMine = true;
+    private boolean startAble = true;
+    private boolean autoPlayAble = true;
+    private ExecutorService pool;
 
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Arbiter_v_1_23 frame = new Arbiter_v_1_23();
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                }
+        EventQueue.invokeLater(() -> {
+            try {
+                Arbiter frame = new Arbiter();
+                frame.setVisible(true);
+            } catch (Exception e) {
             }
         });
     }
 
-    public Arbiter_v_1_23() {
+    public Arbiter() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Minesweeper Arbiter_v627 By JAVA");
+        pool = Executors.newCachedThreadPool();
         paintFrame();
     }
 
@@ -100,7 +117,8 @@ public class Arbiter_v_1_23 extends JFrame {
         btnSenior.setEnabled(col != SENIOR_COL);
         btnSenior.addActionListener(new MyNewGameActionListener(SENIOR_ROW, SENIOR_COL, SENIOR_BOMB));
 
-        btnAutoPlay = new JButton("扫雷外挂");
+        btnAutoPlay = new JButton("运行外挂");
+        btnAutoPlay.setEnabled(false);
         panelBtn.add(btnAutoPlay);
         btnAutoPlay.addActionListener(new MyAutoPlayActionListener());
 
@@ -118,14 +136,14 @@ public class Arbiter_v_1_23 extends JFrame {
     }
 
     private void reStartGame() {
-        blockNo = row * col;// 雷区方格数
-        unmarkMines = bombNo;// 未标记雷数
-        leftBlockNo = blockNo - bombNo;// 剩余方格数
-        size = 800 / row;// 单个雷块尺寸
-        height = row * size + 70;// 高度
-        width = col * size;// 宽度
+        blockNo = row * col;
+        unmarkMines = bombNo;
+        leftBlockNo = blockNo - bombNo;
+        mineSize = 800 / row;
+        height = row * mineSize + 70;
+        width = col * mineSize + 20;
         gaming = false;
-        startMine = true;
+        startAble = true;
         contentPane.removeAll();
         contentPane.repaint();
         paintFrame();
@@ -134,7 +152,7 @@ public class Arbiter_v_1_23 extends JFrame {
 
     private void btnMinesStart() {
         btnMines = new JButton[row][col];
-        Font font = new Font("宋体", Font.BOLD, size / 2);
+        Font font = new Font("宋体", Font.BOLD, mineSize / 2);
         Insets insets = new Insets(0, 0, 0, 0);
         KeyAdapter adapter = new KeyAdapter() {
             @Override
@@ -220,7 +238,7 @@ public class Arbiter_v_1_23 extends JFrame {
                 btnLeftClick(i, j);
             }
 
-            Arbiter_v_1_23.this.setFocusable(true);
+            Arbiter.this.setFocusable(true);
 
         }
 
@@ -247,10 +265,9 @@ public class Arbiter_v_1_23 extends JFrame {
     }
 
     private void btnLeftClick(int i, int j) {
-        if (gaming && exist(i, j) && btnMines[i][j].isEnabled() && "".equals(btnMines[i][j].getText())) {
+        if (gaming && isExist(i, j) && btnMines[i][j].isEnabled() && "".equals(btnMines[i][j].getText())) {
             btnMines[i][j].setText(nAroundMines[i][j] > 0 ? String.valueOf(nAroundMines[i][j]) : "");
             btnMines[i][j].setEnabled(false);
-
             if (bMine[i][j]) {
                 gaming = false;
                 showAllMines();
@@ -258,78 +275,51 @@ public class Arbiter_v_1_23 extends JFrame {
                 txtLeftBlock.setText(String.valueOf(--leftBlockNo));
                 if (leftBlockNo < 1) {
                     gaming = false;
-                    JOptionPane.showMessageDialog(Arbiter_v_1_23.this, "本次耗时 : " + txtTime.getText());
+                    JOptionPane.showMessageDialog(Arbiter.this, "本次耗时 : " + txtTime.getText());
                 }
                 if (nAroundMines[i][j] == 0) {
                     aroundClick(i, j);
                 }
             }
-        } else if (startMine) {
-            startMine = false;
+        } else if (startAble) {
+            startAble = false;
             gaming = true;
-            new Thread() {
-                long timeStart = System.currentTimeMillis();
-
-                @Override
-                public void run() {
-                    while (gaming) {
-                        try {
-                            Thread.sleep(50);
-                        } catch (Exception ignored) {
-                        }
-                        txtTime.setText(
-                                String.format("%.1f", (double) (System.currentTimeMillis() - timeStart) / 1000));
-                        repaint();// 界面刷新
+            long timeStart = System.currentTimeMillis();
+            pool.execute(() -> {
+                while (gaming) {
+                    try {
+                        Thread.sleep(50);
+                    } catch (Exception ignored) {
                     }
+                    txtTime.setText(String.format("%.1f", (double) (System.currentTimeMillis() - timeStart) / 1000));
+                    repaint();// 界面刷新
                 }
-            }.start();
+            });
             mineStartProduce(i, j);
             btnLeftClick(i, j);
+            btnAutoPlay.setEnabled(true);
         }
     }
 
     private void aroundClick(int i, int j) {
-        btnLeftClick(i - 1, j - 1);
-        btnLeftClick(i - 1, j + 1);
-        btnLeftClick(i - 1, j);
-        btnLeftClick(i, j - 1);
-        btnLeftClick(i, j + 1);
-        btnLeftClick(i + 1, j - 1);
-        btnLeftClick(i + 1, j);
-        btnLeftClick(i + 1, j + 1);
-    }
-
-    private int isFlag(int i, int j) {
-        return exist(i, j) && "F".equals(btnMines[i][j].getText()) ? 1 : 0;
-    }
-
-    private int isMine(int i, int j) {
-        return exist(i, j) && bMine[i][j] ? 1 : 0;
+        for (Point p : getAroundPoint(i, j)) {
+            btnLeftClick(p.x, p.y);
+        }
     }
 
     private int aroundMineNo(int i, int j) {
         int n = 0;
-        n += isMine(i - 1, j - 1);
-        n += isMine(i - 1, j + 1);
-        n += isMine(i - 1, j);
-        n += isMine(i, j - 1);
-        n += isMine(i, j + 1);
-        n += isMine(i + 1, j - 1);
-        n += isMine(i + 1, j);
-        n += isMine(i + 1, j + 1);
+        for (Point p : getAroundPoint(i, j)) {
+            n += bMine[p.x][p.y] ? 1 : 0;
+        }
         return n;
     }
 
     private int aroundFlagNo(int i, int j) {
         int n = 0;
-        n += isFlag(i - 1, j - 1);
-        n += isFlag(i - 1, j + 1);
-        n += isFlag(i - 1, j);
-        n += isFlag(i, j - 1);
-        n += isFlag(i, j + 1);
-        n += isFlag(i + 1, j - 1);
-        n += isFlag(i + 1, j);
-        n += isFlag(i + 1, j + 1);
+        for (Point p : getAroundPoint(i, j)) {
+            n += "F".equals(btnMines[p.x][p.y].getText()) ? 1 : 0;
+        }
         return n;
     }
 
@@ -348,40 +338,52 @@ public class Arbiter_v_1_23 extends JFrame {
         }
     }
 
-    private boolean exist(int i, int j) {
+    private List<Point> getAroundPoint(int i, int j) {
+        List<Point> list = new ArrayList<>();
+        for (int k = -1; k < 2; k++) {
+            for (int l = -1; l < 2; l++) {
+                if (isExist(i + k, j + l) && (k != 0 || l != 0)) {
+                    list.add(new Point(i + k, j + l));
+                }
+            }
+        }
+        return list;
+    }
+
+    private boolean isExist(int i, int j) {
         return i > -1 && i < row && j > -1 && j < col;
     }
 
     private class MyAutoPlayActionListener implements ActionListener {
 
         int[][] autoMine = new int[row][col];
-        MineData[][] mineData;
+        List<MineData> mineDataList;
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            new Thread() {
-                @Override
-                public void run() {
-                    if (startMine) {
+            if (autoPlayAble) {
+                pool.execute(() -> {
+                    autoPlayAble = false;
+                    btnAutoPlay.setEnabled(false);
+                    if (startAble) {
                         btnLeftClick(random(row), random(col));
                     }
                     while (gaming) {
                         try {
-                            Thread.sleep(10);
+                            Thread.sleep(random(100));
                         } catch (Exception ignored) {
                         }
-                        getData();
-                        markData();
-                        checkData();
+                        startAutoMineArray();
+                        startMineDataList();
+                        doMineDataList();
+                        clickBlock();
                     }
-                    btnAutoPlay.setText("再战");
-                    System.gc();
-                }
-            }.start();
-
+                    autoPlayAble = true;
+                });
+            }
         }
 
-        void getData() {
+        void startAutoMineArray() {
             for (int i = 0; i < row; i++) {
                 for (int j = 0; j < col; j++) {
                     if (!btnMines[i][j].isEnabled()) {
@@ -391,70 +393,52 @@ public class Arbiter_v_1_23 extends JFrame {
             }
         }
 
-        void markData() {
-            mineData = new MineData[row][col];
+        void startMineDataList() {
+            mineDataList = new ArrayList<>();
             for (int i = 0; i < row; i++) {
                 for (int j = 0; j < col; j++) {
-                    if (autoMine[i][j] > 0 && clacAroundUnClickNo(i, j) > 0) {
-                        List<Point> list = new ArrayList<>();
-                        addLeftBlock(list, i - 1, j - 1);
-                        addLeftBlock(list, i - 1, j);
-                        addLeftBlock(list, i - 1, j + 1);
-                        addLeftBlock(list, i, j - 1);
-                        addLeftBlock(list, i, j + 1);
-                        addLeftBlock(list, i + 1, j - 1);
-                        addLeftBlock(list, i + 1, j);
-                        addLeftBlock(list, i + 1, j + 1);
-                        mineData[i][j] = new MineData(autoMine[i][j] - aroundFlagNo(i, j), list);
+                    List<Point> aroundPoint = getAroundPoint(i, j);
+                    if (autoMine[i][j] > 0 && getAroundUnClickNo(aroundPoint) > 0) {
+                        mineDataList.add(new MineData(autoMine[i][j] - aroundFlagNo(i, j), getLeftBlockPointList(aroundPoint)));
                     }
                 }
             }
         }
 
-        void checkData() {
-            for (int i = 0; i < row; i++) {
-                for (int j = 0; j < col; j++) {
-                    if (mineData[i][j] == null) {
-                        continue;
-                    }
-                    int x, y, maxNo, minNo;
-                    List<Point> max = mineData[i][j].listPoint;
-                    maxNo = mineData[i][j].aroundMinesNo;
-                    if (maxNo == 0) {
-                        clickByList(max);
-                    } else if (maxNo == max.size()) {
-                        markFlagByList(max);
-                    } else if (clacAroundUnClickNo(i, j) > autoMine[i][j]) {
-                        for (x = i - 2; x < i + 3; x++) {
-                            for (y = j - 2; y < j + 3; y++) {
-                                if (!exist(x, y) || mineData[x][y] == null) {
-                                    continue;
-                                }
-                                List<Point> min = mineData[x][y].listPoint;
-                                minNo = mineData[x][y].aroundMinesNo;
-                                if (max.size() <= min.size() || !max.containsAll(min)) {
-                                    continue;
-                                }
-                                max.removeAll(min);
-                                if (maxNo == minNo) {
-                                    clickByList(max);
-                                } else if (maxNo - minNo == max.size()) {
-                                    markFlagByList(max);
-                                }
-                                max.addAll(min);
-                            }
+        void doMineDataList() {
+            for (MineData max : mineDataList) {
+                for (MineData min : mineDataList) {
+                    if (max != min && max.listPoint.containsAll(min.listPoint)) {
+                        max.listPoint.removeAll(min.listPoint);
+                        max.aroundMinesNo -= min.aroundMinesNo;
+                        if (max.listPoint.size() == 0) {
+                            mineDataList.remove(max);
+                            doMineDataList();
+                            return;
                         }
                     }
-
                 }
             }
-            mineData = null;
         }
 
-        void addLeftBlock(List<Point> list, int i, int j) {
-            if (exist(i, j) && btnMines[i][j].isEnabled() && "".equals(btnMines[i][j].getText())) {
-                list.add(new Point(i, j));
+        void clickBlock() {
+            for (MineData data : mineDataList) {
+                if (data.aroundMinesNo == 0) {
+                    clickByList(data.listPoint);
+                } else if (data.aroundMinesNo == data.listPoint.size()) {
+                    markFlagByList(data.listPoint);
+                }
             }
+        }
+
+        List<Point> getLeftBlockPointList(List<Point> list) {
+            for (int i = 0; i < list.size(); i++) {
+                Point p = list.get(i);
+                if (!btnMines[p.x][p.y].isEnabled() || !"".equals(btnMines[p.x][p.y].getText())) {
+                    list.remove(i--);
+                }
+            }
+            return list;
         }
 
         void markFlagByList(List<Point> list) {
@@ -469,35 +453,26 @@ public class Arbiter_v_1_23 extends JFrame {
             }
         }
 
-        private int clacAroundUnClickNo(int i, int j) {
+        private int getAroundUnClickNo(List<Point> list) {
             int n = 0;
-            n += isUnClick(i - 1, j - 1);
-            n += isUnClick(i - 1, j);
-            n += isUnClick(i - 1, j + 1);
-            n += isUnClick(i, j - 1);
-            n += isUnClick(i, j + 1);
-            n += isUnClick(i + 1, j - 1);
-            n += isUnClick(i + 1, j);
-            n += isUnClick(i + 1, j + 1);
+            for (Point p : list) {
+                n += btnMines[p.x][p.y].isEnabled() ? 1 : 0;
+            }
             return n;
         }
 
         private void perMarkFlag(int i, int j) {
-            if (exist(i, j) && btnMines[i][j].isEnabled()) {
+            if (isExist(i, j) && btnMines[i][j].isEnabled()) {
                 autoMine[i][j] = -1;
                 btnMines[i][j].setText("F");
             }
         }
-
-        private int isUnClick(int i, int j) {
-            return exist(i, j) && btnMines[i][j].isEnabled() ? 1 : 0;
-        }
-
     }
 
 
     private class Point {
         int x, y;
+//        int mineNO, flagNo, unkonwnNo;
 
         Point(int x, int y) {
             this.x = x;
@@ -518,7 +493,7 @@ public class Arbiter_v_1_23 extends JFrame {
 
         @Override
         public int hashCode() {
-            return x * 100 + y;
+            return x * 1000 + y;
         }
     }
 
@@ -544,9 +519,9 @@ public class Arbiter_v_1_23 extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Arbiter_v_1_23.this.row = row;
-            Arbiter_v_1_23.this.col = col;
-            Arbiter_v_1_23.this.bombNo = bombNo;
+            Arbiter.this.row = row;
+            Arbiter.this.col = col;
+            Arbiter.this.bombNo = bombNo;
             reStartGame();
         }
     }

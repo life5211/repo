@@ -55,6 +55,7 @@ public class Arbiter_v_1_17 extends JFrame {
 	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					Arbiter_v_1_17 frame = new Arbiter_v_1_17();
@@ -198,10 +199,13 @@ public class Arbiter_v_1_17 extends JFrame {
 	 */
 	private int mineNo() {
 		int n = 0;
-		for (int i = 0; i < row; i++)
-			for (int j = 0; j < col; j++)
-				if (bMine[i][j])
-					n++;
+		for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (bMine[i][j]) {
+                    n++;
+                }
+            }
+        }
 		return n;
 	}
 
@@ -253,6 +257,7 @@ public class Arbiter_v_1_17 extends JFrame {
 			this.j = j;
 		}
 
+		@Override
 		public void mouseReleased(MouseEvent e) {
 			leftClick = e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 1;
 			rightClick = e.getButton() == MouseEvent.BUTTON3 && e.getClickCount() == 1;
@@ -264,7 +269,7 @@ public class Arbiter_v_1_17 extends JFrame {
 			} else if (leftClick) {
 				perBtnClick(i, j);
 			} else if (rightClick && gaming && btnMines[i][j].isEnabled()) {
-				if (btnMines[i][j].getText().equals("")) {
+				if ("".equals(btnMines[i][j].getText())) {
 					btnMines[i][j].setText("F");
 					btnMines[i][j].setForeground(Color.GREEN);
 					txtUnmarkMines.setText(String.valueOf(--unmarkMines));
@@ -278,7 +283,7 @@ public class Arbiter_v_1_17 extends JFrame {
 	}
 
 	private void perBtnClick(int i, int j) {
-		if (gaming && exist(i, j) && btnMines[i][j].isEnabled() && btnMines[i][j].getText().equals("")) {
+		if (gaming && exist(i, j) && btnMines[i][j].isEnabled() && "".equals(btnMines[i][j].getText())) {
 			btnMines[i][j].setText(nAroundMines[i][j] > 0 ? String.valueOf(nAroundMines[i][j]) : "");
 			btnMines[i][j].setEnabled(false);
 
@@ -291,8 +296,9 @@ public class Arbiter_v_1_17 extends JFrame {
 					gaming = false;
 					JOptionPane.showMessageDialog(Arbiter_v_1_17.this, "Win/t:" + txtTime.getText());
 				}
-				if (nAroundMines[i][j] == 0)
-					aroundClick(i, j);
+				if (nAroundMines[i][j] == 0) {
+                    aroundClick(i, j);
+                }
 			}
 		} else if (startMine) {
 			startMine = false;
@@ -300,6 +306,7 @@ public class Arbiter_v_1_17 extends JFrame {
 			new Thread() {
 				long timeStart = System.currentTimeMillis();
 
+				@Override
 				public void run() {
 					while (gaming) {
 						try {
@@ -427,8 +434,10 @@ public class Arbiter_v_1_17 extends JFrame {
 			}
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			checkOpenedCycle = new Cycle() {
+				@Override
 				void function(int i, int j) {
 					if (!btnMines[i][j].isEnabled()) {
 						autoMine[i][j] = nAroundMines[i][j];
@@ -436,6 +445,7 @@ public class Arbiter_v_1_17 extends JFrame {
 				}
 			};
 			markFlagCycle = new Cycle() {
+				@Override
 				void function(int i, int j) {
 					if (autoMine[i][j] > 0) {
 						int leftBlockNum = aroundUnClickNo(i, j);
@@ -448,20 +458,23 @@ public class Arbiter_v_1_17 extends JFrame {
 				}
 			};
 			clickCycle = new Cycle() {
+				@Override
 				void function(int i, int j) {
 					if (autoMine[i][j] > 0) {
 						int leftBlockNum = aroundUnClickNo(i, j);
 						int fNum = aroundFlagNo(i, j);
-						if (leftBlockNum > autoMine[i][j])
-							if (autoMine[i][j] == fNum) {
-								aroundClick(i, j);
-							} else {
+						if (leftBlockNum > autoMine[i][j]) {
+                            if (autoMine[i][j] == fNum) {
+                                aroundClick(i, j);
+                            } else {
 //                                checkData(i, j);
-							}
+                            }
+                        }
 					}
 				}
 			};
 			new Thread() {
+				@Override
 				public void run() {
 
 					if (startMine) {
@@ -538,15 +551,19 @@ public class Arbiter_v_1_17 extends JFrame {
 			this.y = y;
 		}
 
+		@Override
 		public boolean equals(Object o) {
-			if (this == o)
-				return true;
-			if (o == null || getClass() != o.getClass())
-				return false;
+			if (this == o) {
+                return true;
+            }
+			if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 			Point point = (Point) o;
 			return x == point.x && y == point.y;
 		}
 
+		@Override
 		public int hashCode() {
 			return Objects.hash(x, y);
 		}
@@ -559,9 +576,11 @@ public class Arbiter_v_1_17 extends JFrame {
 		abstract void function(int i, int j);
 
 		void cycle() {
-			for (int i = 0; i < row; i++)
-				for (int j = 0; j < col; j++)
-					function(i, j);
+			for (int i = 0; i < row; i++) {
+                for (int j = 0; j < col; j++) {
+                    function(i, j);
+                }
+            }
 		}
 	}
 
@@ -578,6 +597,7 @@ public class Arbiter_v_1_17 extends JFrame {
 			this.bombNo = bombNo;
 		}
 
+		@Override
 		public void actionPerformed(ActionEvent e) {
 			Arbiter_v_1_17.this.row = row;
 			Arbiter_v_1_17.this.col = col;

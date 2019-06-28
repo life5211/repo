@@ -52,6 +52,7 @@ public class Minesweeper extends JFrame {
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 try {
                     Minesweeper frame = new Minesweeper();
@@ -64,7 +65,7 @@ public class Minesweeper extends JFrame {
 
     public Minesweeper() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setTitle("Minesweeper Arbiter By JAVA");
+        setTitle("Minesweeper Arbiter_v627 By JAVA");
         paintFrame();
     }
 
@@ -137,6 +138,7 @@ public class Minesweeper extends JFrame {
         Font font = new Font("宋体", Font.BOLD, size / 2);
         Insets insets = new Insets(0, 0, 0, 0);
         KeyAdapter adapter = new KeyAdapter() {
+            @Override
             public void keyTyped(KeyEvent e) {
                 if (e.getKeyChar() == KeyEvent.VK_F2) {
                     reStartGame();
@@ -183,10 +185,13 @@ public class Minesweeper extends JFrame {
 
     private int calcAllMinesNo() {
         int n = 0;
-        for (int i = 0; i < row; i++)
-            for (int j = 0; j < col; j++)
-                if (bMine[i][j])
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                if (bMine[i][j]) {
                     n++;
+                }
+            }
+        }
         return n;
     }
 
@@ -199,6 +204,7 @@ public class Minesweeper extends JFrame {
             this.j = j;
         }
 
+        @Override
         public void mousePressed(MouseEvent e) {
             doubleClick = e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2
                     || e.getModifiersEx() == (InputEvent.BUTTON3_DOWN_MASK + InputEvent.BUTTON1_DOWN_MASK);
@@ -209,6 +215,7 @@ public class Minesweeper extends JFrame {
             }
         }
 
+        @Override
         public void mouseReleased(MouseEvent e) {
             if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 1) {
                 btnLeftClick(i, j);
@@ -229,7 +236,7 @@ public class Minesweeper extends JFrame {
 
     private void btnRightClick(int i, int j) {
         if (gaming && btnMines[i][j].isEnabled()) {
-            if (btnMines[i][j].getText().equals("")) {
+            if ("".equals(btnMines[i][j].getText())) {
                 btnMines[i][j].setText("F");
                 btnMines[i][j].setForeground(Color.GREEN);
                 txtUnmarkMines.setText(String.valueOf(--unmarkMines));
@@ -241,7 +248,7 @@ public class Minesweeper extends JFrame {
     }
 
     private void btnLeftClick(int i, int j) {
-        if (gaming && exist(i, j) && btnMines[i][j].isEnabled() && btnMines[i][j].getText().equals("")) {
+        if (gaming && exist(i, j) && btnMines[i][j].isEnabled() && "".equals(btnMines[i][j].getText())) {
             btnMines[i][j].setText(nAroundMines[i][j] > 0 ? String.valueOf(nAroundMines[i][j]) : "");
             btnMines[i][j].setEnabled(false);
 
@@ -254,8 +261,9 @@ public class Minesweeper extends JFrame {
                     gaming = false;
                     JOptionPane.showMessageDialog(Minesweeper.this, "本次耗时 : " + txtTime.getText());
                 }
-                if (nAroundMines[i][j] == 0)
+                if (nAroundMines[i][j] == 0) {
                     aroundClick(i, j);
+                }
             }
         } else if (startMine) {
             startMine = false;
@@ -263,6 +271,7 @@ public class Minesweeper extends JFrame {
             new Thread() {
                 long timeStart = System.currentTimeMillis();
 
+                @Override
                 public void run() {
                     while (gaming) {
                         try {
@@ -281,21 +290,24 @@ public class Minesweeper extends JFrame {
     }
 
     private void aroundClick(int i, int j) {
-        for (Point p : getAroundPoint(i, j))
+        for (Point p : getAroundPoint(i, j)) {
             btnLeftClick(p.x, p.y);
+        }
     }
 
     private int aroundMineNo(int i, int j) {
         int n = 0;
-        for (Point p : getAroundPoint(i, j))
+        for (Point p : getAroundPoint(i, j)) {
             n += bMine[p.x][p.y] ? 1 : 0;
+        }
         return n;
     }
 
     private int aroundFlagNo(int i, int j) {
         int n = 0;
-        for (Point p : getAroundPoint(i, j))
+        for (Point p : getAroundPoint(i, j)) {
             n += "F".equals(btnMines[p.x][p.y].getText()) ? 1 : 0;
+        }
         return n;
     }
 
@@ -304,12 +316,14 @@ public class Minesweeper extends JFrame {
     }
 
     private void showAllMines() {
-        for (int i = 0; i < row; i++)
-            for (int j = 0; j < col; j++)
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
                 if (bMine[i][j]) {
                     btnMines[i][j].setText("雷");
                     btnMines[i][j].setForeground(Color.RED);
                 }
+            }
+        }
     }
 
     private List<Point> getAroundPoint(int i, int j) {
@@ -333,9 +347,11 @@ public class Minesweeper extends JFrame {
         int[][] autoMine = new int[row][col];
         List<MineData> mineDataList;
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             if (autoPlay) {
                 new Thread() {
+                    @Override
                     public void run() {
                         autoPlay = false;
                         if (startMine) {
@@ -360,21 +376,25 @@ public class Minesweeper extends JFrame {
         }
 
         void startAutoMineArray() {
-            for (int i = 0; i < row; i++)
-                for (int j = 0; j < col; j++)
-                    if (!btnMines[i][j].isEnabled())
+            for (int i = 0; i < row; i++) {
+                for (int j = 0; j < col; j++) {
+                    if (!btnMines[i][j].isEnabled()) {
                         autoMine[i][j] = nAroundMines[i][j];
+                    }
+                }
+            }
         }
 
         void startMineDataList() {
             mineDataList = new ArrayList<>();
-            for (int i = 0; i < row; i++)
+            for (int i = 0; i < row; i++) {
                 for (int j = 0; j < col; j++) {
                     List<Point> aroundPoint = getAroundPoint(i, j);
                     if (autoMine[i][j] > 0 && getAroundUnClickNo(aroundPoint) > 0) {
                         mineDataList.add(new MineData(autoMine[i][j] - aroundFlagNo(i, j), getLeftBlockPointList(aroundPoint)));
                     }
                 }
+            }
         }
 
         void doMineDataList() {
@@ -478,13 +498,19 @@ public class Minesweeper extends JFrame {
             this.y = y;
         }
 
+        @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
             Point point = (Point) o;
             return x == point.x && y == point.y;
         }
 
+        @Override
         public int hashCode() {
             return x * 1000 + y;
         }
@@ -510,6 +536,7 @@ public class Minesweeper extends JFrame {
             this.bombNo = bombNo;
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             Minesweeper.this.row = row;
             Minesweeper.this.col = col;
