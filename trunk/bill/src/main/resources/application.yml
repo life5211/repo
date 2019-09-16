@@ -1,0 +1,17 @@
+server:
+  port: 80
+spring:
+  application:
+    name: spirng-boot-bill
+  jpa:
+    database: MYSQL
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/?useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&useSSL=false
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+  data:
+    mongodb:
+      uri: mongodb://localhost/bill
+
+
