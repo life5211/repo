@@ -2,8 +2,8 @@ package com.xhu.bill.bean;
 
 import lombok.Data;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author user17
@@ -13,33 +13,38 @@ import java.util.Date;
 @Data
 public class BillBean {
 
-
+    private String id;
     /**
      * 资方
      */
-    private String investor;
+    private Map<String, String> investor;
     /**
      * 消费者
      */
-    private String[] consumers;
+    private List<Map<String, String>> consumers;
+
     /**
      * 时间
      */
-    private Long recordTime = System.currentTimeMillis();
+    private Long recordTime;
     /**
      * 消费时间
      */
-    private Date speedTime;
+    private Long speedTime;
 
     /**
      * 消费金额
      */
-    private BigDecimal amount;
+    private String amount;
 
     /**
      * 备注
      */
     private String desc;
 
+    /**
+     * 成员组
+     */
+    private Integer group;
 
 }

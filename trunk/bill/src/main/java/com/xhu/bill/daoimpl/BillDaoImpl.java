@@ -1,11 +1,16 @@
 package com.xhu.bill.daoimpl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.mongodb.QueryOperators;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
 import com.xhu.bill.bean.BillBean;
 import com.xhu.bill.dao.BillDao;
 import com.xhu.bill.dao.MongoDao;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -14,35 +19,74 @@ import java.util.List;
  * @version 1.0
  * @date 2019-9-16 22:43
  */
+@Repository
 public class BillDaoImpl implements BillDao {
     @Autowired
     private MongoDao mongoDao;
 
     @Override
-    public ObjectId save(BillBean bill) {
-        Document document = new Document("desc", bill.getDesc())
-                .append("amount", bill.getAmount());
+    public ObjectId insertOne(BillBean bill) {
+        Document document = new Document(JSONObject.parseObject(JSONObject.toJSONString(bill)));
         mongoDao.connect("bill", "bill").insertOne(document);
-        return null;
+        return document.getObjectId("_id");
     }
 
     @Override
-    public int delete() {
-        return 0;
+    public long deleteOneById(String id) {
+        Document query = new Document("_id", new ObjectId(id));
+        DeleteResult deleteResult = mongoDao.connect("bill", "bill").deleteOne(query);
+        return deleteResult.getDeletedCount();
     }
 
     @Override
-    public List<BillBean> find(int start, int end) {
-        return null;
+    public BillBean findById(String id) {
+        Document query = new Document("_id", new ObjectId(id));
+        List<BillBean> list = mongoDao.toList(
+                mongoDao.connect("bill", "bill").find(query),
+                BillBean.class);
+        if (list.isEmpty()) {
+            return null;
+        }
+        return list.get(0);
     }
 
     @Override
-    public int update() {
-        return 0;
+    public List<BillBean> find(Integer group, Long start, Long end, int page, int size) {
+        Document query = getQuery(start, end);
+        Document sort = new Document("recordTime", -1);
+        return mongoDao.toList(
+                mongoDao.connect("bill", "bill").find(query).sort(sort).skip(page * size - size).limit(size)
+                , BillBean.class);
     }
 
     @Override
-    public int findCount(int start, int end) {
-        return 0;
+    public long update(BillBean bill) {
+        UpdateResult updateResult =
+                mongoDao.connect("bill", "bill").updateOne(
+                        new Document("_id", new ObjectId(bill.getId()))
+                        , new Document()
+                );
+        return updateResult.getModifiedCount();
+    }
+
+    @Override
+    public long findCount(Integer group, Long start, Long end) {
+        Document query = getQuery(start, end);
+        return mongoDao.connect("bill", "bill").countDocuments(query);
+    }
+
+    private Document getQuery(Long start, Long end) {
+        Document query = new Document();
+        if (start != null || end != null) {
+            Document time = new Document();
+            if (start != null) {
+                time.append(QueryOperators.GT, start);
+            }
+            if (end != null) {
+                time.append(QueryOperators.LTE, end);
+            }
+            query.append("recordTime", time);
+        }
+        return query;
     }
 }

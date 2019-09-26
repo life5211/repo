@@ -26,13 +26,22 @@ public class JsonResult<T> implements Serializable {
         this.totalPage = totalPage;
     }
 
-    public JsonResult() {
-        this.state = ConstantUtil.SYSTEM_ERROR;
-        this.message = ConstantUtil.SYSTEM_ERROR_MESSAGE;
-    }
-
     public JsonResult(int state, String message) {
         this.state = state;
         this.message = message;
     }
+
+    private JsonResult() {
+        this.state = ConstantUtil.SYSTEM_ERROR;
+        this.message = ConstantUtil.SYSTEM_ERROR_MESSAGE;
+    }
+
+    public static JsonResult getJsonResultError() {
+        return JsonResultError.JSON_RESULT;
+    }
+
+    private static class JsonResultError {
+        private static final JsonResult JSON_RESULT = new JsonResult();
+    }
+
 }

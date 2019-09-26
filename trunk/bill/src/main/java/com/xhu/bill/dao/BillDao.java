@@ -15,30 +15,39 @@ public interface BillDao {
      * @param bill
      * @return
      */
-    ObjectId save(BillBean bill);
+    ObjectId insertOne(BillBean bill);
+
+    /**
+     * @param id
+     * @return
+     */
+    long deleteOneById(String id);
+
+    /**
+     * @param id
+     * @return
+     */
+    BillBean findById(String id);
+
+    /**
+     * @param start
+     * @param end
+     * @param page
+     * @param size
+     * @return
+     */
+    List<BillBean> find(Integer group, Long start, Long end, int page, int size);
 
     /**
      * @return
      */
-    int delete();
+    long update(BillBean bill);
 
     /**
      * @param start
      * @param end
      * @return
      */
-    List<BillBean> find(int start, int end);
-
-    /**
-     * @return
-     */
-    int update();
-
-    /**
-     * @param start
-     * @param end
-     * @return
-     */
-    int findCount(int start, int end);
+    long findCount(Integer group, Long start, Long end);
 
 }
