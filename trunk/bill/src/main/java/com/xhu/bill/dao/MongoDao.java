@@ -1,5 +1,6 @@
 package com.xhu.bill.dao;
 
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -126,4 +127,23 @@ public interface MongoDao {
      */
     MongoCollection<Document> connect(String dbName, String colName);
 
+    /**
+     * toList
+     *
+     * @param iterable
+     * @param <T>
+     * @return
+     */
+    <T> List<T> toList(Iterable<T> iterable);
+
+    /**
+     * ToList
+     * 将mongoDB查询结果转换为JavaBean
+     *
+     * @param iterable
+     * @param cls
+     * @param <T>
+     * @return
+     */
+    <T> List<T> toList(Iterable<Document> iterable, Class<T> cls);
 }

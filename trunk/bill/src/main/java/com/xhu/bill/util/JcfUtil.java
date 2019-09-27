@@ -35,11 +35,11 @@ public class JcfUtil {
         private Map<K, V> map = new HashMap<>();
 
         public MapBuilder<K, V> put(K k, V v) {
-            map.put(k, v);
+            this.map.put(k, v);
             return this;
         }
 
-        public Map<K, V> builder() {
+        public Map<K, V> build() {
             return this.map;
         }
     }

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xhu.bill.mapper.GroupMapper">
+    <resultMap id="groupsRm" type="com.xhu.bill.bean.GroupBean">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <collection property="users" column="id" select="findUsersByGroup"/>
+    </resultMap>
+
+    <insert id="add" parameterType="groupBean" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO t_group (name) values (#{name});
+    </insert>
+
+    <insert id="addMember" parameterType="int">
+        INSERT INTO tr_user_group (fk_group,fk_user) values (#{group},#{user});
+    </insert>
+
+    <delete id="delete">
+        DELETE FROM t_group WHERE id=#{id};
+    </delete>
+
+    <update id="update" parameterType="groupBean">
+        update t_group set name = #{name} where id = ${id};
+    </update>
+
+    <select id="find" resultMap="groupsRm">
+        select *  from t_group
+    </select>
+
+    <select id="findOne" resultMap="groupsRm">
+        SELECT * FROM t_group g where g.id=#{id}
+    </select>
+
+    <select id="findUsersByGroup" resultType="string">
+        select u.username
+        FROM tr_user_group up
+        LEFT JOIN t_user u on up.fk_user = u.id
+        where up.fk_group = #{group}
+    </select>
+
+    <select id="count" resultType="int">
+        select count(id) FROM t_group;
+    </select>
+</mapper>
