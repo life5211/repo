@@ -13,6 +13,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
  */
 @SpringBootConfiguration
 public class WebConfig extends WebMvcConfigurationSupport {
+    @Override
+    protected void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LogInterceptor()).addPathPatterns("/web/**");
+    }
 
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -21,6 +25,6 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Override
     protected void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("forward:/static/index.html");
+        registry.addViewController("/").setViewName("redirect:/static/index.html");
     }
 }

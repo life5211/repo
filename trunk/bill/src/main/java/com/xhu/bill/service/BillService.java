@@ -17,29 +17,29 @@ public interface BillService {
      * @param end
      * @return
      */
-    JsonResult<List<BillBean>> findBills(Integer group, int page, Long start, Long end);
+    List<BillBean> findBills(Integer group, int page, Long start, Long end);
 
     /**
      * @param id
      * @return
      */
-    JsonResult deleteOneById(String id);
+    int deleteOneById(String id);
 
     /**
      * @param bill
      * @return
      */
-    JsonResult insertOne(BillBean bill);
+    JsonResult<BillBean> insertOne(BillBean bill);
 
     /**
      * @param id
      * @return
      */
-    JsonResult<BillBean> findById(String id);
+    BillBean findById(String id);
 
     /**
      * @param bill
      * @return
      */
-    JsonResult updateOne(BillBean bill);
+    BillBean updateOne(BillBean bill);
 }

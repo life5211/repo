@@ -1,5 +1,6 @@
 package com.xhu.bill.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 /**
@@ -8,12 +9,12 @@ import lombok.Data;
  * @date 2019-9-20 18:46
  */
 @Data
-public class UserBean {
-    private Integer id;
+public class UserBean extends AbstractMysql {
 
     private String username;
 
     private String name;
 
+    @JsonIgnore
     private String password;
 }

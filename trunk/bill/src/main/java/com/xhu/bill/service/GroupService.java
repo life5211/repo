@@ -1,18 +1,15 @@
-package com.xhu.bill.mapper;
+package com.xhu.bill.service;
 
 import com.xhu.bill.bean.GroupBean;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
 /**
  * @author user17
  * @version 1.0
- * @date 2019-9-20 18:57
+ * @date 2019-10-24 0:27
  */
-@Mapper
-public interface GroupMapper {
-
+public interface GroupService {
     int add(GroupBean group);
 
     int addMember(int group, int user);

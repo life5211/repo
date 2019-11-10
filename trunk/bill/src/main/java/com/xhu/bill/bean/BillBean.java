@@ -1,8 +1,8 @@
 package com.xhu.bill.bean;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,22 +11,19 @@ import java.util.Map;
  * @date 2019-9-16 19:02
  */
 @Data
-public class BillBean {
+@Accessors(chain = true)
+public class BillBean extends AbstractMongo {
 
-    private String id;
     /**
      * 资方
      */
     private Map<String, String> investor;
+
     /**
      * 消费者
      */
-    private List<Map<String, String>> consumers;
+    private Map<String, String> consumers;
 
-    /**
-     * 时间
-     */
-    private Long recordTime;
     /**
      * 消费时间
      */

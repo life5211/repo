@@ -3,8 +3,7 @@
 <mapper namespace="com.xhu.bill.mapper.GroupMapper">
     <resultMap id="groupsRm" type="com.xhu.bill.bean.GroupBean">
         <id property="id" column="id"/>
-        <result property="name" column="name"/>
-        <collection property="users" column="id" select="findUsersByGroup"/>
+        <collection property="users" column="id" select="com.xhu.bill.mapper.UserMapper.findUsersByGroup"/>
     </resultMap>
 
     <insert id="add" parameterType="groupBean" keyProperty="id" useGeneratedKeys="true">
@@ -23,19 +22,26 @@
         update t_group set name = #{name} where id = ${id};
     </update>
 
+    <select id="findByUserId" resultMap="groupsRm">
+        SELECT *
+        FROM
+            t_group
+        WHERE
+            id IN (
+            SELECT
+                fk_group
+            FROM
+                tr_user_group
+            WHERE
+            fk_user = #{id})
+    </select>
+
     <select id="find" resultMap="groupsRm">
         select *  from t_group
     </select>
 
     <select id="findOne" resultMap="groupsRm">
         SELECT * FROM t_group g where g.id=#{id}
-    </select>
-
-    <select id="findUsersByGroup" resultType="string">
-        select u.username
-        FROM tr_user_group up
-        LEFT JOIN t_user u on up.fk_user = u.id
-        where up.fk_group = #{group}
     </select>
 
     <select id="count" resultType="int">

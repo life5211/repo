@@ -10,11 +10,9 @@ import java.util.List;
  * @date 2019-9-20 18:49
  */
 @Data
-public class GroupBean {
-
-    private Integer id;
+public class GroupBean extends AbstractMysql {
 
     private String name;
 
-    private List<String> users;
+    private List<UserBean> users;
 }

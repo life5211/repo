@@ -3,8 +3,8 @@
 <mapper namespace="com.xhu.bill.mapper.UserMapper">
 
     <insert id="add" parameterType="userBean">
-        insert into t_user (username, name, password) values (#{username},#{name},#{password})
-    </insert>
+    insert into t_user (username, name, password) values (#{username},#{name},#{password})
+</insert>
     <delete id="delete">
         delete FROM t_user where username = #{username};
     </delete>
@@ -20,6 +20,24 @@
     </update>
     <select id="find" resultType="userBean">
         select * FROM t_user;
+    </select>
+
+    <select id="findUsersByGroup" resultType="userBean">
+        SELECT
+            u.*
+        FROM
+            t_user u
+            LEFT JOIN tr_user_group up ON up.fk_user = u.id
+        WHERE
+            up.fk_group = #{group}
+    </select>
+
+    <select id="findOneByUsername" resultType="userBean">
+        select * FROM t_user where username = #{username};
+    </select>
+
+    <select id="findOneById" resultType="userBean">
+        select * FROM t_user where id = #{id};
     </select>
 
     <select id="count" resultType="int">

@@ -2,12 +2,15 @@ package com.xhu.bill.daoimpl;
 
 import com.xhu.bill.bean.BillBean;
 import com.xhu.bill.dao.BillDao;
+import com.xhu.bill.util.JcfUtil;
 import org.bson.types.ObjectId;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
 
 /**
  * @author user17
@@ -22,8 +25,14 @@ public class BillDaoTest {
 
     @Test
     public void save() {
-        BillBean billBean = new BillBean();
-        ObjectId save = billDao.insertOne(billBean);
+        BillBean test = new BillBean().setAmount("100.00").setDesc("test").setGroup(1)
+                .setSpeedTime(System.currentTimeMillis()).setDesc("desc");
+        test.setCreateTime(System.currentTimeMillis());
+
+        test.setInvestor(JcfUtil.ofMap("yds", "50.00").put("wh", "50.00").build());
+        test.setConsumers(JcfUtil.ofMap("wsf", "50.00").put("xhz", "50.00").build());
+
+        ObjectId save = billDao.insertOne(test);
         System.out.println(save);
     }
 
@@ -34,7 +43,8 @@ public class BillDaoTest {
 
     @Test
     public void find() {
-//        System.out.println(billDao.find(null, null, 1, 50));
+        List<BillBean> billBeans = billDao.find(1, 2L, 15703469952582L, 1, 50);
+        System.out.println(billBeans);
     }
 
     @Test

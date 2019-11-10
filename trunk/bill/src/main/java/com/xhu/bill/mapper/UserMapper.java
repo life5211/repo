@@ -19,7 +19,13 @@ public interface UserMapper {
 
     int update(UserBean user);
 
+    UserBean findOneByUsername(String username);
+
+    UserBean findOneById(int id);
+
     List<UserBean> find();
+
+    List<UserBean> findUsersByGroup(int id);
 
     int count();
 

@@ -1,5 +1,7 @@
 package com.xhu.bill.util;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -7,6 +9,7 @@ import java.io.Serializable;
  * @version 1.0
  * @date 2019-9-16 21:54
  */
+@Data
 public class JsonResult<T> implements Serializable {
     private static final long serialVersionUID = -5759384902264877013L;
 
@@ -31,17 +34,11 @@ public class JsonResult<T> implements Serializable {
         this.message = message;
     }
 
-    private JsonResult() {
-        this.state = ConstantUtil.SYSTEM_ERROR;
-        this.message = ConstantUtil.SYSTEM_ERROR_MESSAGE;
+    public static <T> JsonResult<T> jst(T t) {
+        return new JsonResult<>(t);
     }
 
-    public static JsonResult getJsonResultError() {
-        return JsonResultError.JSON_RESULT;
+    public static  JsonResult err(String msg,int state) {
+        return new JsonResult(state, msg);
     }
-
-    private static class JsonResultError {
-        private static final JsonResult JSON_RESULT = new JsonResult();
-    }
-
 }

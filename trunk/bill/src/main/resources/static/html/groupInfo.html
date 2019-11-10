@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>groupInfo</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/util.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2 ">
+            <br><br><br>
+            <h3 style="color: #0b96e5"><b>群详情</b></h3>
+            <br><br><br>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>群名称</th>
+                    <th>创建人</th>
+                    <th>创建时间</th>
+                </tr>
+                </thead>
+                <tbody id="group-table-body">
+                <tr>
+                    <td class="group-id ">id</td>
+                    <td class="group-name">name</td>
+                    <td class="group-create-user">user</td>
+                    <td class="group-create-time">time</td>
+                </tr>
+                </tbody>
+            </table>
+            <div>
+                <a href="groupBill.html" class="btn btn-link">记录账单</a>
+            </div>
+            <table class="table table-striped table-bordered">
+                <thead>
+                <tr>
+                    <th>UID</th>
+                    <th>姓名</th>
+                    <th>用户名</th>
+                    <th>创建者</th>
+                    <th>创建时间</th>
+                </tr>
+                </thead>
+                <tbody id="group-users-table-body">
+                <tr>
+                    <td class="user-id ">id</td>
+                    <td class="user-name">name</td>
+                    <td class="user-username"></td>
+                    <td class="user-create-by"></td>
+                    <td class="user-create-time"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<script>
+
+    $(function () {
+        let group = sessionFind("group");
+        let $group = $("#group-table-body tr:last td");
+        $group.eq(0).text(group.id);
+        $group.eq(1).text(group.name);
+        $group.eq(2).text(group.createBy);
+        $group.eq(3).text(new Date(group.createTime).toLocaleString());
+        let $userTr = $("#group-users-table-body tr:first");
+        for (let user of group.users) {
+            $("#group-users-table-body").append($userTr.clone());
+            let $user = $("#group-users-table-body tr:last td");
+            let i = 0;
+            $user.eq(i++).text(user.id);
+            $user.eq(i++).text(user.name);
+            $user.eq(i++).text(user.username);
+            $user.eq(i++).text(user.createBy);
+            $user.eq(i++).text(timestamp2String(user.createTime));
+        }
+        $userTr.remove();
+    });
+
+</script>
+
+</body>
+</html>

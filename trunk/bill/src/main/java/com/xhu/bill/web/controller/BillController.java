@@ -1,4 +1,4 @@
-package com.xhu.bill.controller;
+package com.xhu.bill.web.controller;
 
 import com.xhu.bill.bean.BillBean;
 import com.xhu.bill.service.BillService;
@@ -20,35 +20,35 @@ import java.util.List;
  * @date 2019-9-16 21:53
  */
 @RestController
-@RequestMapping("bill/")
+@RequestMapping("web/bill")
 public class BillController {
 
     @Autowired
     private BillService billService;
 
-    @GetMapping("bill")
+    @GetMapping
     public JsonResult<List<BillBean>> getBills(Integer group, Integer page, Long start, Long end) {
-        return billService.findBills(group, page, start, end);
+        return JsonResult.jst(billService.findBills(group, page, start, end));
     }
 
-    @GetMapping("bill/{id}")
+    @GetMapping("{id}")
     public JsonResult<BillBean> getBillById(@PathVariable String id) {
-        return billService.findById(id);
+        return JsonResult.jst(billService.findById(id));
     }
 
-    @PostMapping("bill")
-    public JsonResult addBill(BillBean bill) {
+    @PostMapping
+    public JsonResult<BillBean> addBill(BillBean bill) {
         return billService.insertOne(bill);
     }
 
-    @DeleteMapping("bill/{id}")
+    @DeleteMapping
     public JsonResult deleteOneById(@PathVariable String id) {
-        return billService.deleteOneById(id);
+        return JsonResult.jst(billService.deleteOneById(id));
     }
 
-    @PutMapping("bill")
+    @PutMapping
     public JsonResult updateOne(BillBean bill) {
-        return billService.updateOne(bill);
+        return JsonResult.jst(billService.updateOne(bill));
     }
 
 }

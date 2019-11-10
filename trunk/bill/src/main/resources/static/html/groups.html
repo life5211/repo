@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>groups</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/util.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2 ">
+            <br><br><br>
+            <h3 style="color: #0b96e5"><b>我的群组</b></h3>
+            <br><br><br>
+            <table class="table">
+                <caption>详情</caption>
+                <thead>
+                <tr>
+                    <th>id</th>
+                    <th>群名称</th>
+                    <th>CreateBy</th>
+                    <th>CreateTime</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody id="group-table-body">
+                <tr onclick="funGroupId(this)">
+                    <td class="group-id ">id</td>
+                    <td class="group-name">name</td>
+                    <td class="group-create-user">user</td>
+                    <td class="group-create-time">time</td>
+                    <td class="group-do">
+                        <a class="btn btn-info" href="groupInfo.html">详情</a>
+                        <a class="btn btn-link" href="groupBill.html">记录账单</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<script>
+    $(function () {
+        let $groupTr = $("#group-table-body tr:first");
+        for (let group of sessionFind("groups")) {
+            $("#group-table-body").append($groupTr.clone());
+            let $group = $("#group-table-body tr:last td");
+            $group.eq(0).text(group.id);
+            $group.eq(1).text(group.name);
+            $group.eq(2).text(group.createBy);
+            $group.eq(3).text(new Date(group.createTime).toLocaleString());
+        }
+        $groupTr.remove();
+    });
+
+    function funGroupId(tr) {
+        for (let group of sessionFind("groups")) {
+            if (group.id == $(tr).children(":first").text()) {
+                sessionSave("group", group);
+            }
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -28,6 +28,7 @@ public class BillDaoImpl implements BillDao {
     public ObjectId insertOne(BillBean bill) {
         Document document = new Document(JSONObject.parseObject(JSONObject.toJSONString(bill)));
         mongoDao.connect("bill", "bill").insertOne(document);
+        bill.setId(document.getObjectId("_id").toString());
         return document.getObjectId("_id");
     }
 
@@ -52,7 +53,7 @@ public class BillDaoImpl implements BillDao {
 
     @Override
     public List<BillBean> find(Integer group, Long start, Long end, int page, int size) {
-        Document query = getQuery(start, end);
+        Document query = getQuery(group, start, end);
         Document sort = new Document("recordTime", -1);
         return mongoDao.toList(
                 mongoDao.connect("bill", "bill").find(query).sort(sort).skip(page * size - size).limit(size)
@@ -71,11 +72,11 @@ public class BillDaoImpl implements BillDao {
 
     @Override
     public long findCount(Integer group, Long start, Long end) {
-        Document query = getQuery(start, end);
+        Document query = getQuery(group, start, end);
         return mongoDao.connect("bill", "bill").countDocuments(query);
     }
 
-    private Document getQuery(Long start, Long end) {
+    private Document getQuery(Integer group, Long start, Long end) {
         Document query = new Document();
         if (start != null || end != null) {
             Document time = new Document();
@@ -87,6 +88,7 @@ public class BillDaoImpl implements BillDao {
             }
             query.append("recordTime", time);
         }
+        query.append("group", group);
         return query;
     }
 }
