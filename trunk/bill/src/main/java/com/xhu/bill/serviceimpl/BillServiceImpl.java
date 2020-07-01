@@ -60,8 +60,12 @@ public class BillServiceImpl implements BillService {
         }
         if (blankCount > 0 && compare > 0) {
             BigDecimal averageAmount = amount.subtract(consumersAmount)
-                    .divide(BigDecimal.valueOf(blankCount), 4, BigDecimal.ROUND_HALF_UP);
+                    .divide(BigDecimal.valueOf(blankCount), 8, BigDecimal.ROUND_HALF_UP);
+            if (averageAmount.toString().endsWith("000000")) {
+
+            }
             consumers.keySet().stream().filter(key -> StringUtils.isBlank(consumers.get(key))).forEach(key -> consumers.put(key, averageAmount.toString()));
+
             billDao.insertOne(bill);
             return JsonResult.jst(bill);
         }

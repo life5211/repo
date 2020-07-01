@@ -3,6 +3,7 @@ package com.xhu.bill.web.controller;
 import com.xhu.bill.bean.BillBean;
 import com.xhu.bill.service.BillService;
 import com.xhu.bill.util.JsonResult;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("web/bill")
+@Api("消费账单")
 public class BillController {
 
     @Autowired

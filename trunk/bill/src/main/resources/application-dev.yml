@@ -1,3 +1,15 @@
 spring:
   thymeleaf:
     cache: false
+
+springfox.documentation.swagger.v2.path: /api-docs
+
+swagger:
+  enable: true
+
+logging:
+  level:
+    root: info
+    com.xhu.bill.mapper: debug
+  path: classpath:springlog
+#  file: springboot.log.txt

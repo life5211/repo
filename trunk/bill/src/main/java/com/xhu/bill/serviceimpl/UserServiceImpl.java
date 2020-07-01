@@ -18,10 +18,10 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
-    public JsonResult<UserBean> userLogin(UserBean user) {
+    public JsonResult<UserBean> userLogin(UserLoginRequest user) {
         UserBean findOne = userMapper.findOneByUsername(user.getUsername());
         if (findOne == null) {
-            return new JsonResult<>(2,"User Not Found");
+            return new JsonResult<>(2, "User Not Found");
         }
         if (findOne.getPassword().equals(user.getPassword())) {
             return new JsonResult<>(findOne);

@@ -18,12 +18,14 @@ spring:
       charset: utf-8
       enabled: true
 
-  #  mvc:
-  #    static-path-pattern: /static/**    #  静态资源访问路径
-  #    view:
-  #      prefix: classpath:/static
-  #  resources:
-  #    static-locations: classpath:/static
+  mvc:
+    view:
+      prefix: classpath:/templates/
+      suffix: .html
+    static-path-pattern: /static/**
+  resources:
+    static-locations: classpath:/static
+
   #  data:
   #    mongodb:
   #      uri: mongodb://localhost/bill
@@ -40,10 +42,3 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
-
-logging:
-  level:
-    root: info
-    com.xhu.bill.mapper: debug
-  path: classpath:springlog
-  file: springboot.log.txt

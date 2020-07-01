@@ -6,6 +6,7 @@
         <collection property="users" column="id" select="com.xhu.bill.mapper.UserMapper.findUsersByGroup"/>
     </resultMap>
 
+
     <insert id="add" parameterType="groupBean" keyProperty="id" useGeneratedKeys="true">
         INSERT INTO t_group (name) values (#{name});
     </insert>
