@@ -127,6 +127,23 @@ public class Calc {
     }
 
     @Test
+    public void tr() {
+        String s1 = "1234abcc--2345abbc-3456tttc";
+        Pattern compile = Pattern.compile("(\\d{3})([a-z]{3})");
+        Matcher matcher = compile.matcher(s1);
+        while (matcher.find()) {
+            int start = matcher.start();
+            int end = matcher.end();
+            for (int i = 0; i <= matcher.groupCount(); i++) {
+                System.out.println(matcher.group(i));
+//                System.out.println(matcher.group(1));
+//                System.out.println(matcher.group(2));
+//                System.out.println(s1.substring(start, end));
+            }
+        }
+    }
+
+    @Test
     public void c() {
         Pattern compile = Pattern.compile("^51000000000$", Pattern.CASE_INSENSITIVE);
         System.out.println(compile);
