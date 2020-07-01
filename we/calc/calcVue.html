@@ -18,7 +18,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <!--  <script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
-
+  <script src="dist/xlsx.core.min.js"></script>
 
 </head>
 <body>
@@ -31,13 +31,13 @@
       <input type="text" class="input-sm" v-model="username" placeholder="username">
       <button type="button" class="btn btn-primary btn-sm" @click="addUser">添加用户</button>
       <button type="button" class="btn btn-primary btn-sm">保存当前用户组</button>
-      <button type="button" class="btn btn-primary btn-sm">保存账单记录</button>
+      <button type="button" class="btn btn-primary btn-sm" onclick="util.exportExcel()">保存账单记录</button>
 
     </div>
     <hr/>
   </div>
   <div class="row text-center">
-    <table class="table table-bordered">
+    <table class="table table-bordered" id="tableCalc">
       <tr>
         <th>&times;</th>
         <th colspan="2" v-for="(user,i) in users" :key="'username'+i">
@@ -88,7 +88,7 @@
         <th>账单详情</th>
         <td v-for="(item,i) in logTitles">{{item}}</td>
       </tr>
-      <tr v-for="(items,i) in getLogs" :key="'logRow'+i">
+      <tr v-for="(items,i) in getLogs" :key="'logRow'+i" @dblclick="rmLog(i)">
         <td v-for="(item,j) in items" :key="'logRow'+i+'logCol'+j" :title="j?'':item+'\n双击删除'">{{j?item:item.substring(11)}}</td>
       </tr>
       <tr v-if="!getLogs.length">
@@ -160,6 +160,12 @@
                 this.consumeInputsInit();
                 this.investLogs.push(this.timeLogs.map(() => 0));
                 this.consumeLogs.push(this.timeLogs.map(() => 0));
+            },
+            rmLog: function (index) {
+                if (!confirm("删除这条记录？")) return;
+                this.timeLogs.splice(index, 1);
+                this.investLogs.forEach(e => e.splice(index, 1));
+                this.consumeLogs.forEach(e => e.splice(index, 1));
             },
             addLog: function () {
                 let investInputsTotal = this.investInputs.reduce((a, b) => a + b, 0);
@@ -241,9 +247,17 @@
         },
         getDateTimeStr: function (date) {
             return this.getDateStr(date) + ' ' + this.getTimeStr(date);
+        },
+        exportExcel: function () {
+            // let sheet = XLSX.utils.table_to_sheet($("#tableCalc")[0]);
+            // var workbook = XLSX.utils.book_new();
+            // XLSX.utils.book_append_sheet(workbook, sheet, "Sheet1");
+            let workbook = XLSX.utils.table_to_book($("#tableCalc")[0]);
+            XLSX.writeFile(workbook, this.getDateTimeStr(new Date()) + '.xlsx');
         }
     };
-    window.onbeforeunload = function() {
+
+    window.onbeforeunload = function () {
         return "确认离开当前页面吗？未保存的数据将会丢失";
     }
 </script>
