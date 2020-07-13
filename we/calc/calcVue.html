@@ -20,40 +20,39 @@
   <!--  <script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
   <script src="dist/xlsx.core.min.js"></script>
 
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <!-- 引入组件库 -->
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+
 </head>
 <body>
-<div class="container" id="calcPage">
+<div class="container" id="calcPage" v-cloak>
   <div class="row">
     <div class="col">
       <h3>群记离线账单计算系统</h3>
     </div>
-    <div class="col">
-      <input type="text" class="input-sm" v-model="username" placeholder="username">
-      <button type="button" class="btn btn-primary btn-sm" @click="addUser">添加用户</button>
-      <button type="button" class="btn btn-primary btn-sm">保存当前用户组</button>
-      <button type="button" class="btn btn-primary btn-sm" onclick="util.exportExcel()">保存账单记录</button>
-
-    </div>
     <hr/>
   </div>
   <div class="row text-center">
-    <table class="table table-bordered" id="tableCalc">
+    <table class="table table-bordered">
       <tr>
-        <th>&times;</th>
-        <th colspan="2" v-for="(user,i) in users" :key="'username'+i">
+        <th></th>
+        <th v-for="(user,i) in users" :key="'username'+i">
           <input v-model="users[i]" class="form-control">
         </th>
       </tr>
       <tbody id="innerBox" @keyup.esc="reset" @keyup.enter="addLog">
       <tr>
         <th>出资人</th>
-        <td colspan="2" v-for="(user,i) in users" :key="'Investors'+i">
+        <td v-for="(user,i) in users" :key="'Investors'+i">
           <input type="number" class="form-control" min="0" v-model.number="investInputs[i]">
         </td>
       </tr>
       <tr>
         <th>消费者</th>
-        <td colspan="2" v-for="(user,i) in users" :key="'Customer'+i">
+        <td v-for="(user,i) in users" :key="'Customer'+i">
           <div class="row no-gutters">
             <div class="col-3">
               <input type="checkbox" class="form-control" v-model="consumeChecks[i]" @click="consumeInputs[i]=''">
@@ -65,7 +64,22 @@
         </td>
       </tr>
       </tbody>
-      <TBODY id="outBox">
+    </table>
+    <div class="col text-right">
+      <input type="text" class="input-sm" v-model="username" placeholder="username">
+      <button type="button" class="btn btn-primary btn-sm" @click="addUser">添加用户</button>
+      <!--      <button type="button" class="btn btn-primary btn-sm">保存当前用户组</button>-->
+      <button type="button" class="btn btn-primary btn-sm" @click="save">保存账单记录</button>
+      <button type="button" class="btn btn-primary btn-sm" @click="rmLogs">清空日志</button>
+      <button type="button" class="btn btn-primary btn-sm" @click="rmAll">重置页面数据</button>
+
+    </div>
+    <table class="table table-bordered" id="tableCalc">
+      <thead>
+      <tr>
+        <th></th>
+        <th colspan="2" v-for="(user,i) in users" :key="'username'+i">{{users[i]}}</th>
+      </tr>
       <tr>
         <td>总支出</td>
         <td colspan="2" v-for="(user,i) in users" :key="'payoutTotal'+i">{{getInvestTotal(i)}}</td>
@@ -77,19 +91,17 @@
       <tr>
         <th>小计</th>
         <th colspan="2" v-for="(user,i) in users" :key="'payoutTotal'+i">{{getInvestTotal(i)+getConsumeTotal(i)}}</th>
-      </tr>
-      </TBODY>
+      </thead>
+
       <tbody id="logBox">
-      <tr>
-        <th></th>
-        <th colspan="2" v-for="(user,i) in users" :key="'username'+i">{{user}}</th>
-      </tr>
       <tr>
         <th>账单详情</th>
         <td v-for="(item,i) in logTitles">{{item}}</td>
       </tr>
       <tr v-for="(items,i) in getLogs" :key="'logRow'+i" @dblclick="rmLog(i)">
-        <td v-for="(item,j) in items" :key="'logRow'+i+'logCol'+j" :title="j?'':item+'\n双击删除'">{{j?item:item.substring(11)}}</td>
+        <td v-for="(item,j) in items" :key="'logRow'+i+'logCol'+j" :title="j?'':item+'\n双击删除'">
+          {{j?item:item.substring(11)}}
+        </td>
       </tr>
       <tr v-if="!getLogs.length">
         <th :colspan="users.length*2+1"> 记录为空</th>
@@ -97,37 +109,31 @@
       </tbody>
     </table>
   </div>
-  <div class="row">
+  <div class="row blue">
     <div class="col-sm-12 text-center">
       @Java17研究室版权所有
     </div>
   </div>
 
 </div>
-<script>
-    const users = ['王顺发', '王虹', '许洪智', '杨东升'];
-    const investInputs = users.map(() => '');
-    const consumeChecks = users.map(() => false);
-    const consumeInputs = users.map(() => '');
-    const investLogs = users.map(() => []);
-    const consumeLogs = users.map(() => []);
-    const timeLogs = [];
+<script type="module">
+    import util from './util.js';
 
     const vm = new Vue({
         el: "#calcPage",
         data: {
             username: '',
-            users,
-            investInputs,
-            consumeChecks,
-            consumeInputs,
-            investLogs,
-            consumeLogs,
-            timeLogs
+            users: [],
+            investInputs: [],
+            consumeChecks: [],
+            consumeInputs: [],
+            investLogs: [],
+            consumeLogs: [],
+            timeLogs: []
         },
         methods: {
-            init: function () {
-                this.reset();
+            logInit() {
+                this.inputInit();
                 this.investLogs = this.users.map(() => []);
                 this.consumeLogs = this.users.map(() => []);
             },
@@ -141,9 +147,9 @@
                 this.consumeInputs = this.users.map(() => '');
 
             },
-            reset: function () {
+            inputInit() {
                 this.investInputsInit();
-                // this.consumeChecksInit();
+                this.consumeChecksInit();
                 this.consumeInputsInit();
             },
             getInvestTotal: function (i) {
@@ -155,11 +161,17 @@
             addUser: function () {
                 this.users.push(this.username);
                 this.username = '';
-                this.investInputsInit();
-                this.consumeChecksInit();
-                this.consumeInputsInit();
+                this.inputInit();
                 this.investLogs.push(this.timeLogs.map(() => 0));
                 this.consumeLogs.push(this.timeLogs.map(() => 0));
+            },
+            rmAll() {
+                if (!confirm("删除所有数据？")) return;
+                this.usersLoad(['user']);
+            },
+            rmLogs() {
+                if (!confirm("删除所有日志？")) return;
+                this.logInit();
             },
             rmLog: function (index) {
                 if (!confirm("删除这条记录？")) return;
@@ -195,7 +207,31 @@
                     this.investLogs[i].push(investInput ? investInput : 0);
                 });
                 this.timeLogs.push(Date.now());
-                this.reset();
+                this.investInputsInit();
+                this.consumeInputsInit();
+            },
+            save() {
+                const result = {users: this.users, investLogs: this.investLogs, consumeLogs: this.consumeLogs, timeLogs: this.timeLogs};
+                util.localSet('billResult', result);
+                util.exportExcel($("#tableCalc")[0]);
+            },
+            logLoad(investLogs, consumeLogs, timeLogs) {
+                this.investLogs = investLogs;
+                this.consumeLogs = consumeLogs;
+                this.timeLogs = timeLogs;
+            },
+            usersLoad(users) {
+                this.users = users;
+                this.logInit();
+            }
+        },
+        created() {
+            let billRst = util.localGet('billResult');
+            if (billRst) {
+                this.usersLoad(billRst.users);
+                this.logLoad(billRst.investLogs, billRst.consumeLogs, billRst.timeLogs);
+            } else {
+                this.usersLoad(['王顺发', '王虹', '许洪智', '杨东升']);
             }
         },
         computed: {
@@ -222,41 +258,6 @@
         },
         watch: {}
     });
-    // vm.init();
-
-    let util = {
-        uuid: 'f864324f7bfa4115a4aa4f7c827ec7b4____',
-        alert: function (text) {
-            alert(text);
-            return false;
-        },
-        localSet: function (key, value) {
-            localStorage.setItem(this.uuid + key, JSON.stringify(value));
-        },
-        localGet: function (key) {
-            return localStorage.getItem(this.uuid + key);
-        },
-        getDateStr: function (date) {
-            const fullYear = date.getFullYear();
-            const month = date.getMonth();
-            const day = date.getDate();
-            return fullYear + (month < 9 ? '-0' : '-') + (month + 1) + (day < 10 ? '-0' : '-') + day;
-        },
-        getTimeStr: function (date) {
-            return date.toTimeString().substring(0, 8);
-        },
-        getDateTimeStr: function (date) {
-            return this.getDateStr(date) + ' ' + this.getTimeStr(date);
-        },
-        exportExcel: function () {
-            // let sheet = XLSX.utils.table_to_sheet($("#tableCalc")[0]);
-            // var workbook = XLSX.utils.book_new();
-            // XLSX.utils.book_append_sheet(workbook, sheet, "Sheet1");
-            let workbook = XLSX.utils.table_to_book($("#tableCalc")[0]);
-            XLSX.writeFile(workbook, this.getDateTimeStr(new Date()) + '.xlsx');
-        }
-    };
-
     window.onbeforeunload = function () {
         return "确认离开当前页面吗？未保存的数据将会丢失";
     }
@@ -274,6 +275,10 @@
   input[type=checkbox].form-control {
     height: calc(95%);
     padding: .375rem .75rem;
+  }
+
+  [v-cloak] {
+    visibility: hidden;
   }
 </style>
 </body>
