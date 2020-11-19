@@ -14,13 +14,13 @@ public class Java8Tester {
         Java8Tester tester = new Java8Tester();
 
         // 类型声明
-        MathOperation addition = (int a, int b) -> a + b;
+        MathOperation addition = Integer::sum;
 
         // 不用类型声明
         MathOperation subtraction = (a, b) -> a - b;
 
         // 大括号中的返回语句
-        MathOperation multiplication = (int a, int b) -> { return a * b; };
+        MathOperation multiplication = (int a, int b) -> a * b;
 
         // 没有大括号及返回语句
         MathOperation division = (int a, int b) -> a / b;
