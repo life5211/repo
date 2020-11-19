@@ -56,8 +56,8 @@ public class Neo4jController {
             teacher.setTel(UUID.randomUUID().toString());
             teachers.add(teacher);
         }
-        teacherDao.save(teachers);
-        studentDao.save(students);
+        teacherDao.save(teachers, teachers.size());
+        studentDao.save(students, students.size());
 
 //        BasicRelation relation = new BasicRelation(students.get(0), teachers.get(0));
 //        relation.setRelationName("师生关系");

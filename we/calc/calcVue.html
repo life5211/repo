@@ -236,9 +236,7 @@
         },
         computed: {
             logTitles: function () {
-                let arr = [];
-                this.users.forEach(() => arr.push('支出', '消费'));
-                return arr;
+                return this.users.flatMap(() => ['支出', '消费']);
             },
             getLogs: function () {
                 let arr = [];
@@ -259,7 +257,7 @@
         watch: {}
     });
     window.onbeforeunload = function () {
-        return "确认离开当前页面吗？未保存的数据将会丢失";
+        return true;
     }
 </script>
 <style>

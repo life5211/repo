@@ -3,22 +3,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.8.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <artifactId>index-pom</artifactId>
+        <groupId>cn.edu.xhu.phy</groupId>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <groupId>com.xhu</groupId>
     <artifactId>bill</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
     <name>bill</name>
     <description>Bills Application</description>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -44,7 +37,6 @@
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>2.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -58,8 +50,6 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.40</version>
-            <!--            <scope>runtime</scope>-->
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -79,17 +69,14 @@
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <version>2.9.2</version>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.9.2</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.47</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -98,12 +85,10 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-email</artifactId>
-            <version>1.5</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
-            <version>4.4</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -112,29 +97,21 @@
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-            <version>1.9.4</version> 
         </dependency>
-
-
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
     <build>
         <finalName>BillApplication</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <fork>true</fork>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-        </plugins>
     </build>
 
 </project>
