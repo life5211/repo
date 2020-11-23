@@ -1,0 +1,35 @@
+server:
+  port: 9002
+
+
+spring:
+  application:
+    name: mybatis-plus-demo
+  profiles:
+    active: dev
+
+  jackson:
+    default-property-inclusion: non_null
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+  datasource:
+    uri: jdbc:mysql://localhost:3306/d_bill
+    url: ${spring.datasource.uri}?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8&rewriteBatchedStatements=true&autoReconnect=true&allowMultiQueries=true&serverTimezone=GMT
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+mybatis:
+  type-aliases-package:
+  mapper-locations: classpath:/mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
