@@ -13,8 +13,13 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>../boot</module>
-        <module>../bill</module>
-        <module>../web</module>
+        <module>../</module>
+        <module>../common</module>
+        <module>../form-base</module>
+        <module>../form-sc</module>
+
+        <!--<module>../boot</module>-->
+        <!--<module>../bill</module>-->
+        <!--<module>../web</module>-->
     </modules>
 </project>
