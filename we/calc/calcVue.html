@@ -16,8 +16,8 @@
   <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-  <!--  <script src="https://cdn.jsdelivr.net/npm/vue"></script>-->
+    <!--  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
   <script src="dist/xlsx.core.min.js"></script>
 
   <!-- 引入样式 -->
@@ -78,7 +78,11 @@
       <thead>
       <tr>
         <th></th>
-        <th colspan="2" v-for="(user,i) in users" :key="'username'+i">{{users[i]}}</th>
+        <th colspan="2" v-for="(user,i) in users" :key="'username'+i" @dblclick="rmUser(i)">{{users[i]}}</th>
+      </tr>
+      <tr>
+        <th>小计</th>
+        <th colspan="2" v-for="(user,i) in users" :key="'payoutTotal'+i">{{getInvestTotal(i)+getConsumeTotal(i)}}</th>
       </tr>
       <tr>
         <td>总支出</td>
@@ -88,9 +92,6 @@
         <td>总消费</td>
         <td colspan="2" v-for="(user,i) in users" :key="'consumeTotal'+i">{{getConsumeTotal(i)}}</td>
       </tr>
-      <tr>
-        <th>小计</th>
-        <th colspan="2" v-for="(user,i) in users" :key="'payoutTotal'+i">{{getInvestTotal(i)+getConsumeTotal(i)}}</th>
       </thead>
 
       <tbody id="logBox">
@@ -179,10 +180,31 @@
                 this.investLogs.forEach(e => e.splice(index, 1));
                 this.consumeLogs.forEach(e => e.splice(index, 1));
             },
+            rmUser(i){
+                if (this.users.length < 2) {
+                    return util.alert('唯一账户，无法删除');
+                }
+                let flag = false;
+                this.investLogs[i].forEach((e, j) => {
+                    if (e - vm.consumeLogs[i][j]) {
+                        flag = true;
+                    }
+                });
+                if (flag) {
+                    return util.alert('存在账单记录，无法删除');
+                }
+                if (!confirm("删除这个用户？")) return;
+                this.users.splice(i, 1);
+                this.investLogs.splice(i, 1);
+                this.consumeLogs.splice(i, 1);
+            },
             addLog: function () {
-                let investInputsTotal = this.investInputs.reduce((a, b) => a + b, 0);
-                if (!investInputsTotal) {
-                    return util.alert('支出输入非法，总支出为零');
+                if (this.investInputs.filter(e => e < 0).length || this.consumeInputs.filter(e => e < 0).length) {
+                    return util.alert('金额为负异常');
+                }
+                let investInputsTotal = this.investInputs.reduce((a, b) => a * 1 + b * 1, 0);
+                if (investInputsTotal <= 0) {
+                    return util.alert('总支出非正异常');
                 }
                 let consumeChecksSize = this.consumeChecks.filter(e => e).length;
                 if (!consumeChecksSize) {
@@ -195,6 +217,9 @@
                     return util.alert('金额输入非法，输入消费金额大于支出金额');
                 }
                 let extraConsumeSize = consumeChecksSize - consumeInputs.length;
+                if (extraConsumeTotal && !extraConsumeSize) {
+                  return util.alert('金额输入非法，输入消费金额小于支出金额');
+                }
                 if (extraConsumeSize) {
                     consumeAverage = parseFloat((extraConsumeTotal * 10000 / extraConsumeSize / 10000).toFixed(4));
                 }
