@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>离线结算系统</title>
+  <title>群记AA离线账单计算系统</title>
   <!--    <script src="jquery-2.1.4.js"></script>-->
   <!--    <script src="bootstrap-4.0.0-dist/js/bootstrap.js"></script>-->
   <!--    <link rel="stylesheet" type="text/css" href="bootstrap-4.0.0-dist/css/bootstrap.css">-->
@@ -16,22 +16,23 @@
   <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
 
-    <!--  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <!--  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
   <script src="dist/xlsx.core.min.js"></script>
+  <!--  <script src="https://unpkg.com/uuid@latest/dist/umd/uuidv4.min.js"></script>-->
 
   <!-- 引入样式 -->
   <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
   <!-- 引入组件库 -->
   <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 
-
+  <!--  <script src="https://cdn.bootcdn.net/ajax/libs/uuid/8.3.2/uuid.min.js"></script>-->
 </head>
 <body>
 <div class="container" id="calcPage" v-cloak>
   <div class="row">
     <div class="col">
-      <h3>群记离线账单计算系统</h3>
+      <h3>群记AA离线账单计算系统</h3>
     </div>
     <hr/>
   </div>
@@ -39,20 +40,20 @@
     <table class="table table-bordered">
       <tr>
         <th></th>
-        <th v-for="(user,i) in users" :key="'username'+i">
+        <th v-for="(user,i) in users" :key="keyFn">
           <input v-model="users[i]" class="form-control">
         </th>
       </tr>
       <tbody id="innerBox" @keyup.esc="reset" @keyup.enter="addLog">
       <tr>
-        <th>出资人</th>
-        <td v-for="(user,i) in users" :key="'Investors'+i">
+        <th>付款人</th>
+        <td v-for="(user,i) in users" :key="keyFn">
           <input type="number" class="form-control" min="0" v-model.number="investInputs[i]">
         </td>
       </tr>
       <tr>
         <th>消费者</th>
-        <td v-for="(user,i) in users" :key="'Customer'+i">
+        <td v-for="(user,i) in users" :key="keyFn">
           <div class="row no-gutters">
             <div class="col-3">
               <input type="checkbox" class="form-control" v-model="consumeChecks[i]" @click="consumeInputs[i]=''">
@@ -65,43 +66,64 @@
       </tr>
       </tbody>
     </table>
-    <div class="col text-right">
-      <input type="text" class="input-sm" v-model="username" placeholder="username">
-      <button type="button" class="btn btn-primary btn-sm" @click="addUser">添加用户</button>
-      <!--      <button type="button" class="btn btn-primary btn-sm">保存当前用户组</button>-->
-      <button type="button" class="btn btn-primary btn-sm" @click="save">保存账单记录</button>
-      <button type="button" class="btn btn-primary btn-sm" @click="rmLogs">清空日志</button>
-      <button type="button" class="btn btn-primary btn-sm" @click="rmAll">重置页面数据</button>
+    <div class="col-12 text-right" style="width: 100%;text-align: right">
+      <input type="text" class="input-sm" v-model="inputName" placeholder="name/title">
 
+      <el-button type="primary" size="mini" @click="addTeam">+团队</el-button>
+      <el-button type="primary" size="mini" @click="addBill">+账单</el-button>
+      <el-button type="primary" size="mini" @click="addUser">+成员</el-button>
+      <el-button type="primary" size="mini" @click="save">保存</el-button>
+      <el-button type="primary" size="mini" @click="exportFn">导出</el-button>
+      <el-button size="mini" @click="rmLogs">清空日志</el-button>
+      <el-button size="mini" @click="rmAll">重置全部</el-button>
     </div>
+
+    <div class="col-12" style=" text-align: left">
+      <!-- <input type="text" class="input-sm" v-model="teams[team].name" placeholder="teamName">-->
+      <el-form>
+        <el-form-item label="团队列表 ">
+          <el-radio-group v-model="team">
+            <el-radio v-for="(e,idx) in teams" :label="idx" :key="keyFn">{{e.name || `团队${idx}`}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="账单列表 ">
+          <el-radio-group v-model="bill">
+            <el-radio v-for="(e,idx) in thisBills" :label="idx" :key="keyFn">{{e.name || `团队${idx}`}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+    </div>
+
     <table class="table table-bordered" id="tableCalc">
       <thead>
       <tr>
         <th></th>
-        <th colspan="2" v-for="(user,i) in users" :key="'username'+i" @dblclick="rmUser(i)">{{users[i]}}</th>
+        <th colspan="2" v-for="(user,i) in users" :key="keyFn" @dblclick="rmUser(i)">{{users[i]}}</th>
       </tr>
       <tr>
         <th>小计</th>
-        <th colspan="2" v-for="(user,i) in users" :key="'payoutTotal'+i">{{getInvestTotal(i)+getConsumeTotal(i)}}</th>
+        <th colspan="2" v-for="(user,i) in users" :key="keyFn">
+          {{getInvestTotal(i) + getConsumeTotal(i)}}
+        </th>
       </tr>
       <tr>
         <td>总支出</td>
-        <td colspan="2" v-for="(user,i) in users" :key="'payoutTotal'+i">{{getInvestTotal(i)}}</td>
+        <td colspan="2" v-for="(user,i) in users" :key="keyFn">{{getInvestTotal(i)}}</td>
       </tr>
       <tr>
         <td>总消费</td>
-        <td colspan="2" v-for="(user,i) in users" :key="'consumeTotal'+i">{{getConsumeTotal(i)}}</td>
+        <td colspan="2" v-for="(user,i) in users" :key="keyFn">{{getConsumeTotal(i)}}</td>
       </tr>
       </thead>
 
       <tbody id="logBox">
       <tr>
         <th>账单详情</th>
-        <td v-for="(item,i) in logTitles">{{item}}</td>
+        <td v-for="(item,i) in logTitles" :key="keyFn">{{item}}</td>
       </tr>
-      <tr v-for="(items,i) in getLogs" :key="'logRow'+i" @dblclick="rmLog(i)">
-        <td v-for="(item,j) in items" :key="'logRow'+i+'logCol'+j" :title="j?'':item+'\n双击删除'">
-          {{j?item:item.substring(11)}}
+      <tr v-for="(items,i) in getLogs" :key="keyFn" @dblclick="rmLog(i)">
+        <td v-for="(item,j) in items" :key="keyFn" :title="j?'':item+'\n双击删除'">
+          {{j ? item : item.substring(11)}}
         </td>
       </tr>
       <tr v-if="!getLogs.length">
@@ -112,7 +134,7 @@
   </div>
   <div class="row blue">
     <div class="col-sm-12 text-center">
-      @Java17研究室版权所有
+      &copy;Java17研究室版权所有
     </div>
   </div>
 
@@ -123,7 +145,14 @@
     const vm = new Vue({
         el: "#calcPage",
         data: {
-            username: '',
+            inputName: '',
+            teams: [{
+                name: '团队1',
+                key: util.mathRandom(),
+                bills: [{name: '账单1', key: util.mathRandom()}]
+            }],
+            team: 0,
+            bill: 0,
             users: [],
             investInputs: [],
             consumeChecks: [],
@@ -146,7 +175,6 @@
             },
             consumeInputsInit: function () {
                 this.consumeInputs = this.users.map(() => '');
-
             },
             inputInit() {
                 this.investInputsInit();
@@ -160,11 +188,34 @@
                 return this.consumeLogs[i].reduce((a, b) => a + b, 0) * -1;
             },
             addUser: function () {
-                this.users.push(this.username);
-                this.username = '';
+                this.users.push(this.inputName);
+                this.inputName = '';
                 this.inputInit();
                 this.investLogs.push(this.timeLogs.map(() => 0));
                 this.consumeLogs.push(this.timeLogs.map(() => 0));
+            },
+            addTeam() {
+                this.teams.push({
+                    name: this.inputName || `团队${this.teams.length + 1}`,
+                    key: this.keyFn(),
+                    bills: [{name: '账单1', key: this.keyFn()}]
+                });
+                this.inputName = '';
+                this.teamUpdate();
+            },
+            addBill() {
+                this.teams[this.team].bills.push({
+                    name: this.inputName || `账单${this.thisTeam.bills.length + 1}`,
+                    key: this.keyFn()
+                });
+                this.inputName = '';
+                this.teamUpdate()
+            },
+            teamUpdate() {
+                util.localSet('teamData', {teams: this.teams, team: this.team, bill: this.bill});
+            },
+            keyFn() {
+                return util.mathRandom();
             },
             rmAll() {
                 if (!confirm("删除所有数据？")) return;
@@ -180,7 +231,7 @@
                 this.investLogs.forEach(e => e.splice(index, 1));
                 this.consumeLogs.forEach(e => e.splice(index, 1));
             },
-            rmUser(i){
+            rmUser(i) {
                 if (this.users.length < 2) {
                     return util.alert('唯一账户，无法删除');
                 }
@@ -218,7 +269,7 @@
                 }
                 let extraConsumeSize = consumeChecksSize - consumeInputs.length;
                 if (extraConsumeTotal && !extraConsumeSize) {
-                  return util.alert('金额输入非法，输入消费金额小于支出金额');
+                    return util.alert('金额输入非法，输入消费金额小于支出金额');
                 }
                 if (extraConsumeSize) {
                     consumeAverage = parseFloat((extraConsumeTotal * 10000 / extraConsumeSize / 10000).toFixed(4));
@@ -236,30 +287,60 @@
                 this.consumeInputsInit();
             },
             save() {
-                const result = {users: this.users, investLogs: this.investLogs, consumeLogs: this.consumeLogs, timeLogs: this.timeLogs};
-                util.localSet('billResult', result);
+                const result = {
+                    users: this.users,
+                    investLogs: this.investLogs,
+                    consumeLogs: this.consumeLogs,
+                    timeLogs: this.timeLogs,
+                    team: this.team,
+                    bill: this.bill
+                };
+                util.localSet(`billResult${this.thisBill.key}`, result);
+                ELEMENT.Message.success("保存成功！");
+            },
+            exportFn() {
                 util.exportExcel($("#tableCalc")[0]);
             },
-            logLoad(investLogs, consumeLogs, timeLogs) {
+            usersLogLoad() {
+                let billRst = util.localGet(`billResult${this.thisBill.key}`);
+                if (billRst) {
+                    this.usersLoad(billRst);
+                    this.logLoad(billRst);
+                } else this.logInit();
+            },
+            logLoad({investLogs, consumeLogs, timeLogs}) {
                 this.investLogs = investLogs;
                 this.consumeLogs = consumeLogs;
                 this.timeLogs = timeLogs;
             },
-            usersLoad(users) {
-                this.users = users;
+            usersLoad({users}) {
+                this.users = users || ['成员1'];
                 this.logInit();
             }
         },
-        created() {
-            let billRst = util.localGet('billResult');
-            if (billRst) {
-                this.usersLoad(billRst.users);
-                this.logLoad(billRst.investLogs, billRst.consumeLogs, billRst.timeLogs);
-            } else {
-                this.usersLoad(['王顺发', '王虹', '许洪智', '杨东升']);
+        beforeMount() {
+            this.usersLoad({users: ['王顺发', '王虹', '许洪智', '杨东升']});
+
+            let teamData = util.localGet('teamData');
+            if (teamData) {
+                let {teams, team, bill} = teamData;
+                this.teams = teams;
+                this.team = team;
+                this.bill = bill;
             }
+            this.usersLogLoad()
         },
+
         computed: {
+            thisTeam() {
+                return this.teams[this.team]
+            },
+            thisBills() {
+                return this.teams[this.team].bills;
+            },
+            thisBill() {
+                return this.teams[this.team].bills[this.bill];
+            },
             logTitles: function () {
                 return this.users.flatMap(() => ['支出', '消费']);
             },
@@ -279,7 +360,15 @@
             }
 
         },
-        watch: {}
+        watch: {
+            team() {
+                this.bill = 0;
+                this.usersLogLoad();
+            },
+            bill() {
+                this.usersLogLoad();
+            }
+        }
     });
     window.onbeforeunload = function () {
         return true;

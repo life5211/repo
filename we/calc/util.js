@@ -3,6 +3,8 @@ export default {
     alert: function (text) {
         alert(text);
         return false;
+    }, mathRandom() {
+        return `${Math.random()}`.substr(2);
     },
     localSet: function (key, value) {
         localStorage.setItem(key + this.uuid, JSON.stringify(value));
