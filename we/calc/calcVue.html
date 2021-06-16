@@ -29,14 +29,15 @@
   <!--  <script src="https://cdn.bootcdn.net/ajax/libs/uuid/8.3.2/uuid.min.js"></script>-->
 </head>
 <body>
-<div class="container" id="calcPage" v-cloak>
-  <div class="row">
+<div :class="{'container':users.length<10}" id="calcPage" v-cloak>
+  <el-row>
     <div class="col">
       <h3>群记AA离线账单计算系统</h3>
     </div>
     <hr/>
-  </div>
-  <div class="row text-center">
+  </el-row>
+  <h6>账单清单录入</h6>
+  <el-row class="text-center">
     <table class="table table-bordered">
       <tr>
         <th></th>
@@ -52,7 +53,7 @@
         </td>
       </tr>
       <tr>
-        <th>消费者</th>
+        <th title="双击全选" @dblclick="consumeSelectAll" style="cursor:pointer">消费者</th>
         <td v-for="(user,i) in users" :key="keyFn">
           <div class="row no-gutters">
             <div class="col-3">
@@ -66,21 +67,25 @@
       </tr>
       </tbody>
     </table>
-    <div class="col-12 text-right" style="width: 100%;text-align: right">
-      <input type="text" class="input-sm" v-model="inputName" placeholder="name/title">
+    <hr/>
+    <el-row>
+      <el-form size="mini">
+        <el-form-item>
+          <el-col :span="4">
+            <el-input type="text" v-model="inputName" placeholder="name/title"></el-input>
+          </el-col>
 
-      <el-button type="primary" size="mini" @click="addTeam">+团队</el-button>
-      <el-button type="primary" size="mini" @click="addBill">+账单</el-button>
-      <el-button type="primary" size="mini" @click="addUser">+成员</el-button>
-      <el-button type="primary" size="mini" @click="save">保存</el-button>
-      <el-button type="primary" size="mini" @click="exportFn">导出</el-button>
-      <el-button size="mini" @click="rmLogs">清空日志</el-button>
-      <el-button size="mini" @click="rmAll">重置全部</el-button>
-    </div>
+          <el-button type="primary" @click="addTeam" class="el-icon-plus">团队</el-button>
+          <el-button type="primary" @click="addBill" class="el-icon-plus">账单</el-button>
+          <el-button type="primary" @click="addUser" class="el-icon-plus">成员</el-button>
+          <el-button type="primary" @click="editTeam" class="el-icon-edit-outline">团队</el-button>
+          <el-button type="primary" @click="editBill" class="el-icon-edit-outline">账单</el-button>
+          <el-button type="primary" @click="save">保存</el-button>
+          <el-button type="primary" class="el-icon-download" @click="exportFn">导出</el-button>
+          <el-button class="el-icon-delete" @click="rmLogs">日志</el-button>
+          <el-button @click="rmAll">重置全部</el-button>
+        </el-form-item>
 
-    <div class="col-12" style=" text-align: left">
-      <!-- <input type="text" class="input-sm" v-model="teams[team].name" placeholder="teamName">-->
-      <el-form>
         <el-form-item label="团队列表 ">
           <el-radio-group v-model="team">
             <el-radio v-for="(e,idx) in teams" :label="idx" :key="keyFn">{{e.name || `团队${idx}`}}</el-radio>
@@ -92,13 +97,19 @@
           </el-radio-group>
         </el-form-item>
       </el-form>
-    </div>
+    </el-row>
 
     <table class="table table-bordered" id="tableCalc">
       <thead>
       <tr>
+        <th :colspan="users.length*2+1">账单清单汇总</th>
+      </tr>
+      <tr>
         <th></th>
-        <th colspan="2" v-for="(user,i) in users" :key="keyFn" @dblclick="rmUser(i)">{{users[i]}}</th>
+        <th colspan="2" v-for="(user,i) in users" :key="keyFn"
+            @dblclick="rmUser(i)" title="双击删除" style="cursor:pointer">
+          {{users[i]}}
+        </th>
       </tr>
       <tr>
         <th>小计</th>
@@ -107,7 +118,7 @@
         </th>
       </tr>
       <tr>
-        <td>总支出</td>
+        <td>总付款</td>
         <td colspan="2" v-for="(user,i) in users" :key="keyFn">{{getInvestTotal(i)}}</td>
       </tr>
       <tr>
@@ -118,7 +129,10 @@
 
       <tbody id="logBox">
       <tr>
-        <th>账单详情</th>
+        <th :colspan="users.length*2+1">账单清单详情</th>
+      </tr>
+      <tr>
+        <th></th>
         <td v-for="(item,i) in logTitles" :key="keyFn">{{item}}</td>
       </tr>
       <tr v-for="(items,i) in getLogs" :key="keyFn" @dblclick="rmLog(i)">
@@ -131,20 +145,20 @@
       </tr>
       </tbody>
     </table>
-  </div>
-  <div class="row blue">
+  </el-row>
+  <el-row class="blue">
     <div class="col-sm-12 text-center">
       &copy;Java17研究室版权所有
     </div>
-  </div>
+  </el-row>
 
-</div>
+  </el-row></div>
 <script type="module">
     import util from './util.js';
 
     const vm = new Vue({
         el: "#calcPage",
-        data: {
+        data: () => ({
             inputName: '',
             teams: [{
                 name: '团队1',
@@ -160,7 +174,7 @@
             investLogs: [],
             consumeLogs: [],
             timeLogs: []
-        },
+        }),
         methods: {
             logInit() {
                 this.inputInit();
@@ -181,6 +195,10 @@
                 this.consumeChecksInit();
                 this.consumeInputsInit();
             },
+            consumeSelectAll() {
+                let every = this.consumeChecks.every(e => e);
+                this.consumeChecks = this.users.map(_ => !every);
+            },
             getInvestTotal: function (i) {
                 return this.investLogs[i].reduce((a, b) => a + b, 0);
             },
@@ -189,10 +207,10 @@
             },
             addUser: function () {
                 this.users.push(this.inputName);
-                this.inputName = '';
                 this.inputInit();
                 this.investLogs.push(this.timeLogs.map(() => 0));
                 this.consumeLogs.push(this.timeLogs.map(() => 0));
+                this.teamUpdate();
             },
             addTeam() {
                 this.teams.push({
@@ -200,7 +218,10 @@
                     key: this.keyFn(),
                     bills: [{name: '账单1', key: this.keyFn()}]
                 });
-                this.inputName = '';
+                this.teamUpdate();
+            },
+            editTeam() {
+                this.teams[this.team].name = this.inputName;
                 this.teamUpdate();
             },
             addBill() {
@@ -208,10 +229,14 @@
                     name: this.inputName || `账单${this.thisTeam.bills.length + 1}`,
                     key: this.keyFn()
                 });
-                this.inputName = '';
+                this.teamUpdate()
+            },
+            editBill() {
+                this.thisBill.name = this.inputName;
                 this.teamUpdate()
             },
             teamUpdate() {
+                this.inputName = '';
                 util.localSet('teamData', {teams: this.teams, team: this.team, bill: this.bill});
             },
             keyFn() {
@@ -291,9 +316,7 @@
                     users: this.users,
                     investLogs: this.investLogs,
                     consumeLogs: this.consumeLogs,
-                    timeLogs: this.timeLogs,
-                    team: this.team,
-                    bill: this.bill
+                    timeLogs: this.timeLogs
                 };
                 util.localSet(`billResult${this.thisBill.key}`, result);
                 ELEMENT.Message.success("保存成功！");
@@ -314,13 +337,12 @@
                 this.timeLogs = timeLogs;
             },
             usersLoad({users}) {
-                this.users = users || ['成员1'];
+                this.users = users || ['成员1', '成员2', '成员3', '成员4'];
                 this.logInit();
             }
         },
         beforeMount() {
-            this.usersLoad({users: ['王顺发', '王虹', '许洪智', '杨东升']});
-
+            this.usersLoad({});
             let teamData = util.localGet('teamData');
             if (teamData) {
                 let {teams, team, bill} = teamData;
@@ -328,7 +350,8 @@
                 this.team = team;
                 this.bill = bill;
             }
-            this.usersLogLoad()
+            this.usersLogLoad();
+            this.teamUpdate();
         },
 
         computed: {
@@ -336,13 +359,13 @@
                 return this.teams[this.team]
             },
             thisBills() {
-                return this.teams[this.team].bills;
+                return this.thisTeam.bills;
             },
             thisBill() {
-                return this.teams[this.team].bills[this.bill];
+                return this.thisBills[this.bill];
             },
             logTitles: function () {
-                return this.users.flatMap(() => ['支出', '消费']);
+                return this.users.flatMap(() => ['付款', '消费']);
             },
             getLogs: function () {
                 let arr = [];
@@ -375,23 +398,27 @@
     }
 </script>
 <style>
-  .table td, .table th {
-    padding: 1px;
-  }
+    .table td, .table th {
+        padding: 1px;
+    }
 
-  .form-control {
-    height: auto;
-    padding: unset !important;
-  }
+    .form-control {
+        height: auto;
+        padding: unset !important;
+    }
 
-  input[type=checkbox].form-control {
-    height: calc(95%);
-    padding: .375rem .75rem;
-  }
+    input[type=checkbox].form-control {
+        height: calc(95%);
+        padding: .375rem .75rem;
+    }
 
-  [v-cloak] {
-    visibility: hidden;
-  }
+    table.table input {
+        border: none
+    }
+
+    [v-cloak] {
+        visibility: hidden;
+    }
 </style>
 </body>
 </html>
