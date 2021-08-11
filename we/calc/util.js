@@ -1,5 +1,5 @@
 export default {
-    uuid: '__f864324f7bfa4115a4aa4f7c827ec7b4',
+    uuid: '__c7bv0',
     alert: function (text) {
         alert(text);
         return false;

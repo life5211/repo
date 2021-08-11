@@ -17,7 +17,10 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
 
   <!--  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>-->
-  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <!--    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>-->
+  <!--<script src="https://unpkg.com/vue/dist/vue.js"></script>-->
+
   <script src="dist/xlsx.core.min.js"></script>
   <!--  <script src="https://unpkg.com/uuid@latest/dist/umd/uuidv4.min.js"></script>-->
 
@@ -41,40 +44,42 @@
     <table class="table table-bordered">
       <tr>
         <th></th>
-        <th v-for="(user,i) in users" :key="keyFn">
-          <input v-model="users[i]" class="form-control">
+        <th v-for="({key},i) in users" :key="key">
+          <el-input :clearable="true" v-model="users[i].name" size="mini"></el-input>
         </th>
       </tr>
-      <tbody id="innerBox" @keyup.esc="reset" @keyup.enter="addLog">
+      <tbody id="innerBox">
       <tr>
         <th>付款人</th>
-        <td v-for="(user,i) in users" :key="keyFn">
-          <input type="number" class="form-control" min="0" v-model.number="investInputs[i]">
+        <td v-for="({key},i) in users" :key="key">
+          <el-input type="number" :clearable="true" size="mini" min="0" v-model.number="paidInputs[i]"></el-input>
         </td>
       </tr>
       <tr>
         <th title="双击全选" @dblclick="consumeSelectAll" style="cursor:pointer">消费者</th>
-        <td v-for="(user,i) in users" :key="keyFn">
+        <td v-for="({key},i) in users" :key="key">
           <div class="row no-gutters">
-            <div class="col-3">
+            <div class="col-2">
               <input type="checkbox" class="form-control" v-model="consumeChecks[i]" @click="consumeInputs[i]=''">
             </div>
             <div class="col">
-              <input type="number" class="form-control" min="0" v-model.number="consumeInputs[i]" :disabled="!consumeChecks[i]">
+              <el-input type="number" :clearable="true" size="mini" min="0" v-model.number="consumeInputs[i]" :disabled="!consumeChecks[i]"></el-input>
             </div>
           </div>
         </td>
       </tr>
       </tbody>
     </table>
-    <hr/>
     <el-row>
       <el-form size="mini">
-        <el-form-item>
-          <el-col :span="4">
-            <el-input type="text" v-model="inputName" placeholder="name/title"></el-input>
+        <el-form-item align="right">
+          <el-col :span="6">
+            <el-input type="text" v-model="inputName" placeholder="Input Text"></el-input>
           </el-col>
-
+          <el-button type="primary" @click="addLog" class="el-icon-plus">添加</el-button>
+          <el-button @click="inputInit" class="el-icon-delete">重置</el-button>
+        </el-form-item>
+        <el-form-item align="right">
           <el-button type="primary" @click="addTeam" class="el-icon-plus">团队</el-button>
           <el-button type="primary" @click="addBill" class="el-icon-plus">账单</el-button>
           <el-button type="primary" @click="addUser" class="el-icon-plus">成员</el-button>
@@ -88,12 +93,12 @@
 
         <el-form-item label="团队列表 ">
           <el-radio-group v-model="team">
-            <el-radio v-for="(e,idx) in teams" :label="idx" :key="keyFn">{{e.name || `团队${idx}`}}</el-radio>
+            <el-radio v-for="(e,idx) in teams" :label="idx" :key="keyFn()">{{e.name || `团队${idx}`}}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="账单列表 ">
           <el-radio-group v-model="bill">
-            <el-radio v-for="(e,idx) in thisBills" :label="idx" :key="keyFn">{{e.name || `团队${idx}`}}</el-radio>
+            <el-radio v-for="(e,idx) in thisBills" :label="idx" :key="keyFn()">{{e.name || `团队${idx}`}}</el-radio>
           </el-radio-group>
         </el-form-item>
       </el-form>
@@ -102,46 +107,57 @@
     <table class="table table-bordered" id="tableCalc">
       <thead>
       <tr>
-        <th :colspan="users.length*2+1">账单清单汇总</th>
+        <th :colspan="users.length*2+4">账单清单汇总</th>
       </tr>
       <tr>
         <th></th>
-        <th colspan="2" v-for="(user,i) in users" :key="keyFn"
+        <th colspan="2" v-for="({name},i) in users" :key="keyFn()"
             @dblclick="rmUser(i)" title="双击删除" style="cursor:pointer">
-          {{users[i]}}
+          {{name}}
         </th>
       </tr>
       <tr>
         <th>小计</th>
-        <th colspan="2" v-for="(user,i) in users" :key="keyFn">
-          {{getInvestTotal(i) + getConsumeTotal(i)}}
+        <th colspan="2" v-for="user in users" :key="keyFn()">
+          {{getPaidTotal(user) + getConsumeTotal(user)}}
         </th>
       </tr>
       <tr>
         <td>总付款</td>
-        <td colspan="2" v-for="(user,i) in users" :key="keyFn">{{getInvestTotal(i)}}</td>
+        <td colspan="2" v-for="user in users" :key="keyFn()">{{getPaidTotal(user)}}</td>
       </tr>
       <tr>
         <td>总消费</td>
-        <td colspan="2" v-for="(user,i) in users" :key="keyFn">{{getConsumeTotal(i)}}</td>
+        <td colspan="2" v-for="user in users" :key="keyFn()">{{getConsumeTotal(user)}}</td>
       </tr>
       </thead>
 
       <tbody id="logBox">
       <tr>
-        <th :colspan="users.length*2+1">账单清单详情</th>
+        <th :colspan="users.length*2+4">账单清单详情</th>
       </tr>
       <tr>
         <th></th>
-        <td v-for="(item,i) in logTitles" :key="keyFn">{{item}}</td>
+        <template v-for="e in users">
+          <td>付款</td>
+          <td>消费</td>
+        </template>
+        <td>清单描述</td>
+        <td>创建时间</td>
+        <td>操作</td>
       </tr>
-      <tr v-for="(items,i) in getLogs" :key="keyFn" @dblclick="rmLog(i)">
-        <td v-for="(item,j) in items" :key="keyFn" :title="j?'':item+'\n双击删除'">
-          {{j ? item : item.substring(11)}}
-        </td>
+      <tr v-for="({desc, createDate, logDetail},i) in billLogs" :key="keyFn()">
+        <td>{{i + 1}}</td>
+        <template v-for="({key}) in users">
+          <td>{{(logDetail[key] || {}).paid || ''}}</td>
+          <td>{{(logDetail[key] || {}).consume || ''}}</td>
+        </template>
+        <td>{{desc}}</td>
+        <td style="width: 10em">{{dateFn(createDate)}}</td>
+        <td><a href="javascript:void(0)" @click="rmLog(i)">删除</a></td>
       </tr>
       <tr v-if="!getLogs.length">
-        <th :colspan="users.length*2+1"> 记录为空</th>
+        <th :colspan="users.length*2+4"> 记录为空</th>
       </tr>
       </tbody>
     </table>
@@ -167,31 +183,28 @@
             }],
             team: 0,
             bill: 0,
-            users: [],
-            investInputs: [],
+            users: [{key: '', name: ''}],
+            paidInputs: [],
             consumeChecks: [],
             consumeInputs: [],
-            investLogs: [],
-            consumeLogs: [],
-            timeLogs: []
+            billLogs: [{desc: '', createDate: 0, logDetail: {user1: {paid: 0, consume: 0}}}]
         }),
         methods: {
             logInit() {
                 this.inputInit();
-                this.investLogs = this.users.map(() => []);
-                this.consumeLogs = this.users.map(() => []);
+                this.billLogs = [];
             },
-            investInputsInit: function () {
-                this.investInputs = this.users.map(() => '');
+            paidInputsInit: function () {
+                this.paidInputs = this.users.map(_ => '');
             },
             consumeChecksInit: function () {
-                this.consumeChecks = this.users.map(() => false);
+                this.consumeChecks = this.users.map(_ => false);
             },
             consumeInputsInit: function () {
-                this.consumeInputs = this.users.map(() => '');
+                this.consumeInputs = this.users.map(_ => '');
             },
             inputInit() {
-                this.investInputsInit();
+                this.paidInputsInit();
                 this.consumeChecksInit();
                 this.consumeInputsInit();
             },
@@ -199,17 +212,20 @@
                 let every = this.consumeChecks.every(e => e);
                 this.consumeChecks = this.users.map(_ => !every);
             },
-            getInvestTotal: function (i) {
-                return this.investLogs[i].reduce((a, b) => a + b, 0);
+            getPaidTotal: function ({key}) {
+                return this.billLogs.map(({logDetail}) => logDetail[key])
+                    .map(e => e && e.paid ? e.paid : 0)
+                    .reduce((a, b) => a + b, 0);
             },
-            getConsumeTotal: function (i) {
-                return this.consumeLogs[i].reduce((a, b) => a + b, 0) * -1;
+            getConsumeTotal: function ({key}) {
+                return this.billLogs.map(({logDetail}) => logDetail[key])
+                    .map(e => e && e.consume ? e.consume : 0)
+                    .reduce((a, b) => a + b, 0) * -1;
             },
             addUser: function () {
-                this.users.push(this.inputName);
+                let key = this.users.map(({key}) => key).reduce((a, b) => a > b ? a : b, 0) + 1;
+                this.users.push({key, name: this.inputName || `成员${key}`});
                 this.inputInit();
-                this.investLogs.push(this.timeLogs.map(() => 0));
-                this.consumeLogs.push(this.timeLogs.map(() => 0));
                 this.teamUpdate();
             },
             addTeam() {
@@ -244,7 +260,7 @@
             },
             rmAll() {
                 if (!confirm("删除所有数据？")) return;
-                this.usersLoad(['user']);
+                this.usersLoad({});
             },
             rmLogs() {
                 if (!confirm("删除所有日志？")) return;
@@ -252,34 +268,33 @@
             },
             rmLog: function (index) {
                 if (!confirm("删除这条记录？")) return;
-                this.timeLogs.splice(index, 1);
-                this.investLogs.forEach(e => e.splice(index, 1));
-                this.consumeLogs.forEach(e => e.splice(index, 1));
+                this.billLogs.splice(index, 1);
             },
             rmUser(i) {
                 if (this.users.length < 2) {
                     return util.alert('唯一账户，无法删除');
                 }
-                let flag = false;
-                this.investLogs[i].forEach((e, j) => {
-                    if (e - vm.consumeLogs[i][j]) {
-                        flag = true;
-                    }
-                });
+                let flag = this.billLogs.some(({logDetail}) => logDetail[this.users[i].key] && logDetail[this.users[i].key].paid && logDetail[this.users[i].key].consume);
                 if (flag) {
                     return util.alert('存在账单记录，无法删除');
                 }
                 if (!confirm("删除这个用户？")) return;
                 this.users.splice(i, 1);
-                this.investLogs.splice(i, 1);
-                this.consumeLogs.splice(i, 1);
+            },
+            inputTextInitAndGet() {
+                const text = this.inputName;
+                this.inputName = '';
+                return text;
+            },
+            dateFn(time) {
+                return util.getDateTimeStr(new Date(time))
             },
             addLog: function () {
-                if (this.investInputs.filter(e => e < 0).length || this.consumeInputs.filter(e => e < 0).length) {
+                if (this.paidInputs.filter(e => e < 0).length || this.consumeInputs.filter(e => e < 0).length) {
                     return util.alert('金额为负异常');
                 }
-                let investInputsTotal = this.investInputs.reduce((a, b) => a * 1 + b * 1, 0);
-                if (investInputsTotal <= 0) {
+                let paidInputsTotal = this.paidInputs.reduce((a, b) => a * 1 + b * 1, 0);
+                if (paidInputsTotal <= 0) {
                     return util.alert('总支出非正异常');
                 }
                 let consumeChecksSize = this.consumeChecks.filter(e => e).length;
@@ -288,7 +303,7 @@
                 }
                 let consumeAverage = 0;
                 let consumeInputs = this.consumeInputs.filter(e => e);
-                let extraConsumeTotal = investInputsTotal - consumeInputs.reduce((a, b) => a + b, 0);
+                let extraConsumeTotal = paidInputsTotal - consumeInputs.reduce((a, b) => a + b, 0);
                 if (extraConsumeTotal < 0) {
                     return util.alert('金额输入非法，输入消费金额大于支出金额');
                 }
@@ -299,24 +314,25 @@
                 if (extraConsumeSize) {
                     consumeAverage = parseFloat((extraConsumeTotal * 10000 / extraConsumeSize / 10000).toFixed(4));
                 }
-                this.consumeLogs.forEach((e, i) => {
-                    const consumeInput = this.consumeInputs[i];
-                    this.consumeLogs[i].push(consumeInput ? consumeInput : this.consumeChecks[i] ? consumeAverage : 0);
+                const billLog = {createDate: Date.now(), desc: this.inputTextInitAndGet(), logDetail: {}};
+                this.users.forEach(({key}, i) => {
+                    if ((this.consumeChecks[i] || this.paidInputs[i])) {
+                        const consumeInput = this.consumeInputs[i];
+                        const paidInput = this.paidInputs[i];
+                        billLog.logDetail[key] = {
+                            paid: paidInput || 0,
+                            consume: consumeInput || (this.consumeChecks[i] ? consumeAverage : 0)
+                        };
+                    }
                 });
-                this.investLogs.forEach((e, i) => {
-                    const investInput = this.investInputs[i];
-                    this.investLogs[i].push(investInput ? investInput : 0);
-                });
-                this.timeLogs.push(Date.now());
-                this.investInputsInit();
+                this.billLogs.push(billLog);
+                this.paidInputsInit();
                 this.consumeInputsInit();
             },
             save() {
                 const result = {
                     users: this.users,
-                    investLogs: this.investLogs,
-                    consumeLogs: this.consumeLogs,
-                    timeLogs: this.timeLogs
+                    billLogs: this.billLogs
                 };
                 util.localSet(`billResult${this.thisBill.key}`, result);
                 ELEMENT.Message.success("保存成功！");
@@ -331,13 +347,11 @@
                     this.logLoad(billRst);
                 } else this.logInit();
             },
-            logLoad({investLogs, consumeLogs, timeLogs}) {
-                this.investLogs = investLogs;
-                this.consumeLogs = consumeLogs;
-                this.timeLogs = timeLogs;
+            logLoad({billLogs}) {
+                this.billLogs = billLogs;
             },
             usersLoad({users}) {
-                this.users = users || ['成员1', '成员2', '成员3', '成员4'];
+                this.users = users || [{key: 1, name: '成员1'}, {key: 2, name: '成员2'}, {key: 3, name: '成员3'}];
                 this.logInit();
             }
         },
@@ -364,22 +378,14 @@
             thisBill() {
                 return this.thisBills[this.bill];
             },
-            logTitles: function () {
-                return this.users.flatMap(() => ['付款', '消费']);
-            },
             getLogs: function () {
-                let arr = [];
-                this.investLogs[0].forEach((e, i) => {
-                    let cols = [];
-                    cols.push(util.getDateTimeStr(new Date(this.timeLogs[i])));
-                    this.users.forEach((e, j) => {
-                        let investLogElement = this.investLogs[j][i];
-                        let consumeLogElement = this.consumeLogs[j][i];
-                        return cols.push(investLogElement ? investLogElement : '', consumeLogElement ? consumeLogElement * -1 : '');
-                    });
-                    arr.push(cols);
-                });
-                return arr;
+                return this.billLogs.map(({desc, createDate, logDetail}) =>
+                    this.users.flatMap(({key}) => {
+                        const userLog = logDetail[key];
+                        if (!userLog) return ['', ''];
+                        return [userLog.paid || '', userLog.consume || ''];
+                    }).concat(desc, util.getDateTimeStr(new Date(createDate)))
+                );
             }
 
         },
@@ -393,6 +399,7 @@
             }
         }
     });
+    window.vmm = vm;
     window.onbeforeunload = function () {
         return true;
     }
