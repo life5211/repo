@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ExcelRead</title>
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <!--<script src="dist/xlsx.core.min.js"></script>-->
+  <script src="dist/xlsx.full.min.js"></script>
+
+</head>
+<body>
+<div id="gradeQry">
+
+  <el-button type="primary">
+    <input type="file" @change="fileReadFn"/>
+  </el-button>
+  <div slot="tip" class="el-upload__tip">只能上传xls/xlsx文件，且不超过500kb</div>
+  <div>
+    <el-button v-for="sheet in SheetNames">{{sheet}}</el-button>
+  </div>
+
+  <el-table
+      :data="sheetJson"
+      border
+      style="width: 100%">
+    <el-table-column v-for="(e) in tableCols"
+                     :prop="e"
+                     :label="e"
+                     sortable>
+    </el-table-column>
+
+  </el-table>
+</div>
+</body>
+<!-- import Vue before Element -->
+<!--<script src="https://unpkg.com/vue@2/dist/vue.js"></script>-->
+
+<!-- 开发环境版本，包含了有帮助的命令行警告 -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<!-- 生产环境版本，优化了尺寸和速度 -->
+<!--<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>-->
+<!-- import JavaScript -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+  new Vue({
+    el: '#gradeQry',
+    data: {
+      sheetJson: [],
+      SheetNames: [],
+      tableCols: []
+    },
+    methods: {
+      fileReadFn({target}) {
+        // const file = this.$refs.file.files[0];
+        const file = target.files[0];
+        (async () => {
+          const wb = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsBinaryString(file);
+            reader.onload = (e) => {
+              const data = e.target.result;
+              resolve(XLSX.read(data, {type: 'binary'}));
+            };
+          });
+          document.wb = wb;
+          this.SheetNames = wb.SheetNames;
+          this.loadFn(wb.SheetNames[0]);
+        })();
+
+
+      },
+      loadFn(sheetName) {
+        const sheetJson = XLSX.utils.sheet_to_json(document.wb.Sheets[sheetName]);
+        if (!sheetJson || !sheetJson.length) {
+          return;
+        }
+        this.tableCols = Object.keys(sheetJson[0]);
+        this.sheetJson = sheetJson;
+
+      }
+
+    }
+
+  })
+</script>
+</html>
+
+
+Resources
