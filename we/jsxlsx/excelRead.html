@@ -16,7 +16,7 @@
   </el-button>
   <div slot="tip" class="el-upload__tip">只能上传xls/xlsx文件，且不超过500kb</div>
   <div>
-    <el-button v-for="sheet in SheetNames">{{sheet}}</el-button>
+    <el-button v-for="sheet in SheetNames" @click=loadFn(sheet)>{{sheet}}</el-button>
   </div>
 
   <el-table
@@ -36,13 +36,14 @@
 <!--<script src="https://unpkg.com/vue@2/dist/vue.js"></script>-->
 
 <!-- 开发环境版本，包含了有帮助的命令行警告 -->
-<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.7.9/vue.js"></script>
 <!-- 生产环境版本，优化了尺寸和速度 -->
 <!--<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>-->
+<!--<script src="https://cdn.bootcdn.net/ajax/libs/vue/2.7.9/vue.min.js"></script>-->
 <!-- import JavaScript -->
 <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 <script>
-  new Vue({
+  document.VVue = new Vue({
     el: '#gradeQry',
     data: {
       sheetJson: [],
@@ -85,5 +86,3 @@
 </script>
 </html>
 
-
-Resources
