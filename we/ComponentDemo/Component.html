@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="STYLESHEET" type="text/css" href="./Component.css" />
+</head>
+
+<body>
+    <div class="provider-title">Query Customer</div>
+    <div class="provider-content">
+        <div style="width: 100%;background-color: #ffffff;content: '';display: table;clear: both;margin: -8px;">
+            <div class="bes-form-template">
+                <div class="hlds-form-element hlds-col-lg-4">
+                    <label class="hlds-form-element__label" title="Category"><abbr class="hlds-required">*</abbr>
+                        ID Type
+                    </label>
+                    <div class="hlds-form-element__control">
+                        <input type="search" class="hlds-input" title="" placeholder="" readonly="readOnly">
+                        <img class="hlds-image" src="./image/iconsdown.png">
+                    </div>
+                </div>
+            </div>
+            <div class="bes-form-template">
+                <div class="hlds-form-element hlds-col-lg-4">
+                    <label class="hlds-form-element__label" title="ID Number"><abbr
+                            class="hlds-required-hidden">*</abbr>
+                        ID Number
+                    </label>
+                    <div class="hlds-form-element__control">
+                        <input type="search" class="hlds-input" title="" placeholder="">
+                    </div>
+                </div>
+            </div>
+            <div class="bes-form-template">
+                <div class="hlds-form-element hlds-col-lg-4">
+                    <label class="hlds-form-element__label" title="ID Number"><abbr
+                            class="hlds-required-hidden">*</abbr>
+                        Service Number
+                    </label>
+                    <div class="hlds-form-element__control">
+                        <input type="search" class="hlds-input" title="" placeholder="">
+                    </div>
+                </div>
+            </div>
+            <div class="bes-form-template">
+                <div class="hlds-form-element hlds-col-lg-4">
+                    <label class="hlds-form-element__label" title="ID Number"><abbr
+                            class="hlds-required-hidden">*</abbr>
+                        First Name
+                    </label>
+                    <div class="hlds-form-element__control">
+                        <input type="search" class="hlds-input" title="" placeholder="">
+                    </div>
+                </div>
+            </div>
+            <div class="bes-form-template">
+                <div class="hlds-form-element hlds-col-lg-4">
+                    <label class="hlds-form-element__label" title="ID Number"><abbr
+                            class="hlds-required-hidden">*</abbr>
+                        Middle Name
+                    </label>
+                    <div class="hlds-form-element__control">
+                        <input type="search" class="hlds-input" title="" placeholder="">
+                    </div>
+                </div>
+            </div>
+            <div class="bes-form-template">
+                <div class="hlds-form-element hlds-col-lg-4">
+                    <label class="hlds-form-element__label" title="ID Number"><abbr
+                            class="hlds-required-hidden">*</abbr>
+                        Last Name
+                    </label>
+                    <div class="hlds-form-element__control">
+                        <input type="search" class="hlds-input" title="" placeholder="">
+                    </div>
+                </div>
+            </div>
+            <div class="bes-form-template">
+                <div class="hlds-form-element hlds-col-lg-4">
+                    <label class="hlds-form-element__label" title="ID Number"><abbr
+                            class="hlds-required-hidden">*</abbr>
+                        IMSI
+                    </label>
+                    <div class="hlds-form-element__control">
+                        <input type="search" class="hlds-input" title="" placeholder="">
+                    </div>
+                </div>
+            </div>
+            <div class="bes-form-template">
+                <div class="hlds-form-element hlds-col-lg-4">
+                    <label class="hlds-form-element__label" title="ID Number"><abbr
+                            class="hlds-required-hidden">*</abbr>
+                        ICCID
+                    </label>
+                    <div class="hlds-form-element__control">
+                        <input type="search" class="hlds-input" title="" placeholder="">
+                    </div>
+                </div>
+            </div>
+            <div class="bes-form-template">
+                <div class="hlds-form-element hlds-col-lg-4">
+                    <label class="hlds-form-element__label" title="Category"><abbr class="hlds-required-hidden">*</abbr>
+                        Start Time
+                    </label>
+                    <div class="hlds-form-element__control">
+                        <input type="search" class="hlds-input" title="" placeholder="" readonly="readOnly">
+                        <img class="hlds-image" src="./image/calender.png">
+                    </div>
+                </div>
+            </div>
+            <div class="bes-form-template">
+                <div class="hlds-form-element hlds-col-lg-4">
+                    <label class="hlds-form-element__label" title="Category"><abbr class="hlds-required-hidden">*</abbr>
+                        end Time
+                    </label>
+                    <div class="hlds-form-element__control">
+                        <input type="search" class="hlds-input" title="" placeholder="" readonly="readOnly">
+                        <img class="hlds-image" src="./image/calender.png">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hlds-button-group" style="width: 100%;background-color: #ffffff;padding-top: 24px;content: '';display: table;clear: both;">
+            <button name="Validate" class="validator-button">Validate</button>
+            <button name="Reset" class="reset-button" style="margin-left: 16px;">Reset</button>
+        </div>
+
+        <div style="width: 100%;background-color: #ffffff;content: '';display: table;clear: both;margin-top: 24px;">
+            <div class="table-title">Customers List</div>
+            <table
+                class="hlds-table hlds-table--fixed-layout hlds-table--bordered hlds-table--cell-buffer hlds-table--striped hlds-max-medium-table--stacked hlds-table--col-resizable besColResizer"
+                id="besColResizer0">
+                <thead class="ng-scope">
+                    <tr class="hlds-line-height--reset">
+                        <th ng-click="$besTable.thClick($event)" ng-class="{'hlds-text-title--nocaps' : false}"
+                            class="hlds-text-title--caps bes-xsort hlds-is-sorted hlds-is-sorted--desc" sortby="custName"
+                            expression="$besTable.$ec" reverse="$besTable.$rv"
+                            ng-repeat="$MetaItem in $Meta.fields track by $index" ng-if="GetDisplayVal($MetaItem)"
+                            style="width: 353px;"><a href="javascript:void(0);"
+                                class="hlds-th__action hlds-text-link--reset">
+                                <div class="hlds-truncate ng-binding hlds-truncate-title" title="Customer Name">Customer
+                                    Name</div>
+                            </a></th>
+                        <th ng-click="$besTable.thClick($event)" ng-class="{'hlds-text-title--nocaps' : false}"
+                            class="hlds-text-title--caps bes-xsort" sortby="mobilePhone" expression="$besTable.$ec"
+                            reverse="$besTable.$rv" ng-repeat="$MetaItem in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaItem)" style="width: 353px;"><a href="javascript:void(0);"
+                                class="hlds-th__action hlds-text-link--reset">
+                                <div class="hlds-truncate ng-binding hlds-truncate-title" title="Mobile Number">Mobile
+                                    Number</div>
+                            </a></th>
+                        <th ng-click="$besTable.thClick($event)" ng-class="{'hlds-text-title--nocaps' : false}"
+                            class="hlds-text-title--caps bes-xsort" sortby="email" expression="$besTable.$ec"
+                            reverse="$besTable.$rv" ng-repeat="$MetaItem in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaItem)" style="width: 353px;"><a href="javascript:void(0);"
+                                class="hlds-th__action hlds-text-link--reset">
+                                <div class="hlds-truncate ng-binding hlds-truncate-title" title="Email">Email</div>
+                            </a></th>
+                        <th ng-click="$besTable.thClick($event)" ng-class="{'hlds-text-title--nocaps' : false}"
+                            class="hlds-text-title--caps bes-xsort" sortby="effDate" expression="$besTable.$ec"
+                            reverse="$besTable.$rv" ng-repeat="$MetaItem in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaItem)" style="width: 353px;"><a href="javascript:void(0);"
+                                class="hlds-th__action hlds-text-link--reset">
+                                <div class="hlds-truncate ng-binding hlds-truncate-title" title="Effective Date">Effective
+                                    Date</div>
+                            </a></th>
+                        <th ng-click="$besTable.thClick($event)" ng-class="{'hlds-text-title--nocaps' : false}"
+                            class="hlds-text-title--caps bes-xsort" sortby="" expression="$besTable.$ec"
+                            reverse="$besTable.$rv" ng-if="$Meta.action &amp;&amp; GetDisplayVal($Meta.action)"
+                            style="width: 353px;"><a href="javascript:void(0);"
+                                class="hlds-th__action hlds-text-link--reset">
+                                <div class="hlds-truncate hlds-th__action ng-binding hlds-truncate-title" title="Operation">
+                                    Operation</div>
+                            </a></th>
+                    </tr>
+                </thead>
+                <tbody class="ng-scope">
+                    <tr bes-table-row-data="" class="hlds-hint-parent  hlds-table-tr--level-0"
+                        ng-if="!$Rowdata.__customize__.isHidden"
+                        ng-repeat="$Rowdata in $besTable.$filterResult=($besTable.rows | orderBy:$besTable.$ec:$besTable.$rv )"
+                        ng-init="$Rowindex=$index;$Property=$Rowdata;">
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-default="" class="ng-scope">
+                                        <div class="hlds-truncate ng-binding hlds-truncate-content" title="aXgUamuNHNSu">
+                                            aXgUamuNHNSu</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-default="" class="ng-scope">
+                                        <div class="hlds-truncate ng-binding hlds-truncate-content" title=""></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-default="" class="ng-scope">
+                                        <div class="hlds-truncate ng-binding hlds-truncate-content" title=""></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-when="datetime" class="ng-scope">
+                                        <span class="bes-table-template-datetime uee-datetime-container ng-scope"
+                                            readonly="readonly" kind="datetime" property="effDate" displayformat=""
+                                            showweeks="" validator="date;" uee-xdyna="" viewmode="'view'" disable=""
+                                            id="uee-003">
+                                            <div class="uee-inputele-view" style="height: auto" ng-show="!viewmode">
+                                                <div class="uee-border ng-binding  hlds-truncate-content"
+                                                    style="line-height:30px" ng-bind="$input.text"
+                                                    title="2020-06-29 22:57:39">2020-06-29 22:57:39</div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-if="$Meta.action &amp;&amp; GetDisplayVal($Meta.action)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <button
+                                    class="hlds-button hlds-button--base table_template_operation0  hlds-truncate-content"
+                                    ng-disabled="BooleanValue($MetaBtn.disabled)"
+                                    ng-repeat="$MetaBtn in $Meta.action.buttons track by $index"
+                                    ng-if="Display($Rowdata, $MetaBtn)">
+                                    Select
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr bes-table-row-data="" class="hlds-hint-parent  hlds-table-tr--level-0"
+                        ng-if="!$Rowdata.__customize__.isHidden"
+                        ng-repeat="$Rowdata in $besTable.$filterResult=($besTable.rows | orderBy:$besTable.$ec:$besTable.$rv )"
+                        ng-init="$Rowindex=$index;$Property=$Rowdata;">
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-default="" class="ng-scope">
+                                        <div class="hlds-truncate ng-binding hlds-truncate-content" title="aKYS">aKYS</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-default="" class="ng-scope">
+                                        <div class="hlds-truncate ng-binding  hlds-truncate-content" title=""></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-default="" class="ng-scope">
+                                        <div class="hlds-truncate ng-binding hlds-truncate-content" title=""></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-when="datetime" class="ng-scope">
+                                        <span class="bes-table-template-datetime uee-datetime-container ng-scope"
+                                            readonly="readonly" kind="datetime" property="effDate" displayformat=""
+                                            showweeks="" validator="date;" uee-xdyna="" viewmode="'view'" disable=""
+                                            id="uee-002">
+                                            <div class="uee-inputele-view" style="height: auto" ng-show="!viewmode">
+                                                <div class="uee-border ng-binding hlds-truncate-content"
+                                                    style="line-height:30px" ng-bind="$input.text"
+                                                    title="2020-06-29 23:53:09">2020-06-29 23:53:09</div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-if="$Meta.action &amp;&amp; GetDisplayVal($Meta.action)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <button
+                                    class="hlds-button hlds-button--base table_template_operation0 hlds-truncate-content"
+                                    ng-disabled="BooleanValue($MetaBtn.disabled)"
+                                    ng-repeat="$MetaBtn in $Meta.action.buttons track by $index"
+                                    ng-if="Display($Rowdata, $MetaBtn)">
+                                    Select
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr bes-table-row-data="" class="hlds-hint-parent  hlds-table-tr--level-0"
+                        ng-if="!$Rowdata.__customize__.isHidden"
+                        ng-repeat="$Rowdata in $besTable.$filterResult=($besTable.rows | orderBy:$besTable.$ec:$besTable.$rv )"
+                        ng-init="$Rowindex=$index;$Property=$Rowdata;">
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-default="" class="ng-scope">
+                                        <div class="hlds-truncate ng-binding hlds-truncate-content" title="akQJgnGB">
+                                            akQJgnGB</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-default="" class="ng-scope">
+                                        <div class="hlds-truncate ng-binding hlds-truncate-content" title=""></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-default="" class="ng-scope">
+                                        <div class="hlds-truncate ng-binding hlds-truncate-content" title="qIxN@huawei.com">
+                                            qIxN@huawei.com</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-when="datetime" class="ng-scope">
+                                        <span class="bes-table-template-datetime uee-datetime-container ng-scope"
+                                            readonly="readonly" kind="datetime" property="effDate" displayformat=""
+                                            showweeks="" validator="date;" uee-xdyna="" viewmode="'view'" disable=""
+                                            id="uee-006">
+                                            <div class="uee-inputele-view" style="height: auto" ng-show="!viewmode">
+                                                <div class="uee-border ng-binding hlds-truncate-content"
+                                                    style="line-height:30px" ng-bind="$input.text"
+                                                    title="2020-07-06 16:42:49">2020-07-06 16:42:49</div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-if="$Meta.action &amp;&amp; GetDisplayVal($Meta.action)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <button
+                                    class="hlds-button hlds-button--base table_template_operation0 hlds-truncate-content"
+                                    ng-disabled="BooleanValue($MetaBtn.disabled)"
+                                    ng-repeat="$MetaBtn in $Meta.action.buttons track by $index"
+                                    ng-if="Display($Rowdata, $MetaBtn)">
+                                    Select
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr bes-table-row-data="" class="hlds-hint-parent  hlds-table-tr--level-0"
+                        ng-if="!$Rowdata.__customize__.isHidden"
+                        ng-repeat="$Rowdata in $besTable.$filterResult=($besTable.rows | orderBy:$besTable.$ec:$besTable.$rv )"
+                        ng-init="$Rowindex=$index;$Property=$Rowdata;">
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-default="" class="ng-scope">
+                                        <div class="hlds-truncate ng-binding hlds-truncate-content" title="adtgudnj">
+                                            adtgudnj</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-default="" class="ng-scope">
+                                        <div class="hlds-truncate ng-binding hlds-truncate-content" title=""></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-default="" class="ng-scope">
+                                        <div class="hlds-truncate ng-binding hlds-truncate-content" title=""></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-when="datetime" class="ng-scope">
+                                        <span class="bes-table-template-datetime uee-datetime-container ng-scope"
+                                            readonly="readonly" kind="datetime" property="effDate" displayformat=""
+                                            showweeks="" validator="date;" uee-xdyna="" viewmode="'view'" disable=""
+                                            id="uee-005">
+                                            <div class="uee-inputele-view" style="height: auto" ng-show="!viewmode">
+                                                <div class="uee-border ng-binding hlds-truncate-content"
+                                                    style="line-height:30px" ng-bind="$input.text"
+                                                    title="2020-06-29 23:52:22">2020-06-29 23:52:22</div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-if="$Meta.action &amp;&amp; GetDisplayVal($Meta.action)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <button
+                                    class="hlds-button hlds-button--base table_template_operation0 hlds-truncate-content"
+                                    ng-disabled="BooleanValue($MetaBtn.disabled)"
+                                    ng-repeat="$MetaBtn in $Meta.action.buttons track by $index"
+                                    ng-if="Display($Rowdata, $MetaBtn)">
+                                    Select
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr bes-table-row-data="" class="hlds-hint-parent  hlds-table-tr--level-0"
+                        ng-if="!$Rowdata.__customize__.isHidden"
+                        ng-repeat="$Rowdata in $besTable.$filterResult=($besTable.rows | orderBy:$besTable.$ec:$besTable.$rv )"
+                        ng-init="$Rowindex=$index;$Property=$Rowdata;">
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-default="" class="ng-scope">
+                                        <div class="hlds-truncate ng-binding hlds-truncate-content" title="aadfzxaadfzx">
+                                            aadfzxaadfzx</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-default="" class="ng-scope">
+                                        <div class="hlds-truncate ng-binding hlds-truncate-content" title=""></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-default="" class="ng-scope">
+                                        <div class="hlds-truncate ng-binding hlds-truncate-content" title=""></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-repeat="$MetaField in $Meta.fields track by $index"
+                            ng-if="GetDisplayVal($MetaField)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <div ng-switch="$MetaField.type" uee-xdyna="" class="ng-scope">
+                                    <div ng-switch-when="datetime" class="ng-scope">
+                                        <span class="bes-table-template-datetime uee-datetime-container ng-scope"
+                                            readonly="readonly" kind="datetime" property="effDate" displayformat=""
+                                            showweeks="" validator="date;" uee-xdyna="" viewmode="'view'" disable=""
+                                            id="uee-004">
+                                            <div class="uee-inputele-view" style="height: auto" ng-show="!viewmode">
+                                                <div class="uee-border ng-binding hlds-truncate-content"
+                                                    style="line-height:30px" ng-bind="$input.text"
+                                                    title="2020-07-06 16:09:12">2020-07-06 16:09:12</div>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="" ng-if="$Meta.action &amp;&amp; GetDisplayVal($Meta.action)" class="ng-scope">
+                            <div class="hlds-truncate" title="">
+                                <button
+                                    class="hlds-button hlds-button--base table_template_operation0 hlds-truncate-content"
+                                    ng-disabled="BooleanValue($MetaBtn.disabled)"
+                                    ng-repeat="$MetaBtn in $Meta.action.buttons track by $index"
+                                    ng-if="Display($Rowdata, $MetaBtn)">
+                                    Select
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="hlds-pagination hlds-grid--align-spread hlds-screen--small hlds-screen--medium hlds-screen--large"
+        ng-show="$besPagination.observe.total > 0"
+        ng-class="{'hlds-pagination--simple': $besPagination.observe.variant == 'simple' || $besPagination.observe.variant == 'mini'}">
+        <div class="hlds-pagination-left"
+            ng-show="$besPagination.observe.variantMap.showPaginationLeft[$besPagination.observe.variant]"><span
+                ng-bind="$UEE.i18n('omni.common.label.total')+$UEE.i18n('omni.common.label.colon')"
+                class="ng-binding">Total:</span> <label class="hlds-pagination-total__number ng-binding"
+                ng-bind="$besPagination.observe.total">4861</label> <label
+                class="hlds-pagination-total__suffix ng-binding" ng-bind="$besPagination.observe.totalSuffix"></label>
+        </div>
+        <div class="hlds-pagination-right">
+            <div class="hlds-select_container"
+                ng-show="$besPagination.observe.variantMap.showPaginationSelect[$besPagination.observe.variant]"><select
+                    class="hlds-select ng-pristine ng-untouched ng-valid ng-not-empty"
+                    ng-model="$besPagination.observe.recordPerPage"
+                    ng-options="$drop.value as $drop.label for $drop in $besPagination.pagesizeJson"
+                    ng-change="$besPagination.dropItemChanged()">
+                    <option label="5" value="string:5" selected="selected">5</option>
+                    <option label="10" value="string:10">10</option>
+                    <option label="20" value="string:20">20</option>
+                    <option label="50" value="string:50">50</option>
+                </select></div><span class="hlds-pagination-pre hlds-is-disabled"
+                ng-class="{'hlds-is-disabled': $besPagination.observe.selectedPageNumber == 1}"
+                ng-click="$besPagination.preClick()"></span>
+            <!-- ngIf: $besPagination.observe.variantMap.showSimplePageNumbers[$besPagination.observe.variant] -->
+            <div ng-if="$besPagination.observe.variantMap.showSimplePageNumbers[$besPagination.observe.variant]"
+                class="ng-scope">
+                <ul>
+                    <li ng-repeat="$Item in $besPagination.pageNumbers track by $index" ng-bind="$Item"
+                        ng-class="{'hlds-is-active': $Item == $besPagination.observe.selectedPageNumber,'hlds-is-not--Item':$Item == '...'}"
+                        ng-click="$besPagination.pageNumberClick($Item)" class="ng-binding ng-scope hlds-is-active">1
+                    </li><!-- end ngRepeat: $Item in $besPagination.pageNumbers track by $index -->
+                    <li ng-repeat="$Item in $besPagination.pageNumbers track by $index" ng-bind="$Item"
+                        ng-class="{'hlds-is-active': $Item == $besPagination.observe.selectedPageNumber,'hlds-is-not--Item':$Item == '...'}"
+                        ng-click="$besPagination.pageNumberClick($Item)" class="ng-binding ng-scope">2</li>
+                    <!-- end ngRepeat: $Item in $besPagination.pageNumbers track by $index -->
+                    <li ng-repeat="$Item in $besPagination.pageNumbers track by $index" ng-bind="$Item"
+                        ng-class="{'hlds-is-active': $Item == $besPagination.observe.selectedPageNumber,'hlds-is-not--Item':$Item == '...'}"
+                        ng-click="$besPagination.pageNumberClick($Item)" class="ng-binding ng-scope">3</li>
+                    <!-- end ngRepeat: $Item in $besPagination.pageNumbers track by $index -->
+                    <li ng-repeat="$Item in $besPagination.pageNumbers track by $index" ng-bind="$Item"
+                        ng-class="{'hlds-is-active': $Item == $besPagination.observe.selectedPageNumber,'hlds-is-not--Item':$Item == '...'}"
+                        ng-click="$besPagination.pageNumberClick($Item)" class="ng-binding ng-scope">4</li>
+                    <!-- end ngRepeat: $Item in $besPagination.pageNumbers track by $index -->
+                    <li ng-repeat="$Item in $besPagination.pageNumbers track by $index" ng-bind="$Item"
+                        ng-class="{'hlds-is-active': $Item == $besPagination.observe.selectedPageNumber,'hlds-is-not--Item':$Item == '...'}"
+                        ng-click="$besPagination.pageNumberClick($Item)" class="ng-binding ng-scope">5</li>
+                    <!-- end ngRepeat: $Item in $besPagination.pageNumbers track by $index -->
+                    <li ng-repeat="$Item in $besPagination.pageNumbers track by $index" ng-bind="$Item"
+                        ng-class="{'hlds-is-active': $Item == $besPagination.observe.selectedPageNumber,'hlds-is-not--Item':$Item == '...'}"
+                        ng-click="$besPagination.pageNumberClick($Item)" class="ng-binding ng-scope hlds-is-not--Item">
+                        ...</li><!-- end ngRepeat: $Item in $besPagination.pageNumbers track by $index -->
+                    <li ng-repeat="$Item in $besPagination.pageNumbers track by $index" ng-bind="$Item"
+                        ng-class="{'hlds-is-active': $Item == $besPagination.observe.selectedPageNumber,'hlds-is-not--Item':$Item == '...'}"
+                        ng-click="$besPagination.pageNumberClick($Item)" class="ng-binding ng-scope">973</li>
+                </ul>
+            </div><span
+                class="hlds-pagination-next"
+                ng-class="{'hlds-is-disabled': $besPagination.observe.selectedPageNumber == $besPagination.totalPage}"
+                ng-click="$besPagination.nextClick()"></span> <input class="hlds-pagination-page--input" type="text"
+                ng-show="$besPagination.observe.variantMap.showPaginationInput[$besPagination.observe.variant]"> <span
+                class="hlds-pagination-goto ng-binding"
+                ng-show="$besPagination.observe.variantMap.showPaginationGoto[$besPagination.observe.variant]"
+                ng-click="$besPagination.goClick($event)" ng-bind="$UEE.i18n('omni.common.label.pagegoto')">Go</span>
+        </div>
+    </div>
+        </div>
+    </div>
+
+
+    
+</body>
+
+</html>
