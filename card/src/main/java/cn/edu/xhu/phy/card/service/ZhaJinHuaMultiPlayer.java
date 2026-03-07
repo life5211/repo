@@ -44,7 +44,7 @@ public class ZhaJinHuaMultiPlayer {
     }
 
     public static void main(String[] args) {
-        int totalSim = 20000000;
+        int totalSim = 2000000;
         String[] typeNames = {"单张", "对子", "顺子", "金花", "顺金", "豹子"};
 
         System.out.println("=== 炸金花 1~17 人 获胜牌型统计（每局 " + totalSim + " 次）===\n");
