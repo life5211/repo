@@ -3,8 +3,15 @@ package com.arbiter;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ArbiterWithAuto_v_2_19 extends JFrame {
@@ -238,10 +245,11 @@ public class ArbiterWithAuto_v_2_19 extends JFrame {
         if (gaming && btnMines[i][j].isEnabled()) {
             if ("".equals(btnMines[i][j].getText())) {
                 btnMines[i][j].setText("F");
-                btnMines[i][j].setForeground(Color.GREEN);
+                btnMines[i][j].setForeground(Color.MAGENTA);
                 txtUnmarkMines.setText(String.valueOf(--unmarkMines));
             } else {
                 btnMines[i][j].setText("");
+                btnMines[i][j].setForeground(Color.BLACK);
                 txtUnmarkMines.setText(String.valueOf(++unmarkMines));
             }
         }
@@ -249,13 +257,17 @@ public class ArbiterWithAuto_v_2_19 extends JFrame {
 
     private void btnLeftClick(int i, int j) {
         if (gaming && exist(i, j) && btnMines[i][j].isEnabled() && "".equals(btnMines[i][j].getText())) {
-            btnMines[i][j].setText(nAroundMines[i][j] > 0 ? String.valueOf(nAroundMines[i][j]) : "");
+            NumBox box = Arrays.stream(NumBox.values()).filter(e -> nAroundMines[i][j] == e.value).reduce((a, b) -> a).get();
+            btnMines[i][j].setText(box.text);
+            btnMines[i][j].setForeground(box.color);
             btnMines[i][j].setEnabled(false);
 
             if (bMine[i][j]) {
                 gaming = false;
                 showAllMines();
-            } else {
+                return;
+            }
+            {
                 txtLeftBlock.setText(String.valueOf(--leftBlockNo));
                 if (leftBlockNo < 1) {
                     gaming = false;
@@ -265,7 +277,9 @@ public class ArbiterWithAuto_v_2_19 extends JFrame {
                     aroundClick(i, j);
                 }
             }
-        } else if (startMine) {
+            return;
+        }
+        if (startMine) {
             startMine = false;
             gaming = true;
             new Thread() {
@@ -350,28 +364,25 @@ public class ArbiterWithAuto_v_2_19 extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (autoPlay) {
-                new Thread() {
-                    @Override
-                    public void run() {
-                        autoPlay = false;
-                        if (startMine) {
-                            btnLeftClick(random(row), random(col));
-                        }
-                        while (gaming) {
-                            try {
-                                Thread.sleep(random(100));
-                            } catch (Exception ignored) {
-                            }
-                            startAutoMineArray();
-                            startMineDataList();
-                            doMineDataList();
-                            clickBlock();
-                        }
-                        autoPlay = true;
-                        btnAutoPlay.setText("再战");
-                        System.gc();
+                new Thread(() -> {
+                    autoPlay = false;
+                    if (startMine) {
+                        btnLeftClick(random(row), random(col));
                     }
-                }.start();
+                    while (gaming) {
+                        try {
+                            Thread.sleep(random(100));
+                        } catch (Exception ignored) {
+                        }
+                        startAutoMineArray();
+                        startMineDataList();
+                        doMineDataList();
+                        clickBlock();
+                    }
+                    autoPlay = true;
+                    btnAutoPlay.setText("再战");
+                    System.gc();
+                }).start();
             }
         }
 
@@ -542,6 +553,34 @@ public class ArbiterWithAuto_v_2_19 extends JFrame {
             ArbiterWithAuto_v_2_19.this.col = col;
             ArbiterWithAuto_v_2_19.this.bombNo = bombNo;
             reStartGame();
+        }
+    }
+
+    private enum NumBox {
+        Null(-1, "", new Color(0, 0, 0)),
+        Zero(0, "", new Color(0, 0, 0)),
+        One(1, "1", new Color(0, 0, 255)),
+        Two(2, "2", new Color(0, 128, 0)),
+        Three(3, "3", new Color(255, 0, 0)),
+        Four(4, "4", new Color(0, 0, 128)),
+        Five(5, "5", new Color(128, 0, 0)),
+        Six(6, "6", new Color(0, 128, 128)),
+        Seven(7, "7", new Color(0, 0, 0)),
+        Eight(8, "8", new Color(128, 128, 128)),
+        ;
+        private int value;
+        private String text;
+        private Color color;
+
+        NumBox(int value, String text, Color color) {
+            this.color = color;
+            this.value = value;
+            this.text = text;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(this.value);
         }
     }
 }
