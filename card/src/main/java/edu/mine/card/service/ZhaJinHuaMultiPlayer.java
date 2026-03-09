@@ -1,4 +1,4 @@
-package cn.edu.xhu.phy.card.service;
+package edu.mine.card.service;
 
 import java.util.ArrayList;
 import java.util.Collections;

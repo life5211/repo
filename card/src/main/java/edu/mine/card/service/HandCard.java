@@ -1,4 +1,4 @@
-package cn.edu.xhu.phy.card.service;
+package edu.mine.card.service;
 
 import java.util.Comparator;
 import java.util.List;
@@ -14,10 +14,7 @@ public class HandCard implements Comparable<HandCard> {
     int r1, r2, r3;
 
     public HandCard(List<Card> cards) {
-        this.cards = cards.stream()
-            .sorted(Comparator.comparing(Card::getSuit))
-            .sorted(Comparator.comparing(Card::getRank))
-            .collect(Collectors.toList());
+        this.cards = cards.stream().sorted(Comparator.comparing(Card::getSort)).collect(Collectors.toList());
         this.r1 = cards.get(0).rank;
         this.r2 = cards.get(1).rank;
         this.r3 = cards.get(2).rank;

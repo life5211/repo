@@ -1,4 +1,4 @@
-package cn.edu.xhu.phy.card;
+package edu.mine.card;
 
 import org.springframework.boot.SpringApplication;
 

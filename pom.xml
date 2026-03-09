@@ -171,7 +171,7 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>1.18.16</version>
-                <scope>build</scope>
+                <scope>provided</scope>
             </dependency>
 
 
@@ -286,7 +286,7 @@
     <repositories>
         <repository>
             <id>maven-ali</id>
-            <url>http://maven.aliyun.com/nexus/content/groups/public//</url>
+            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
